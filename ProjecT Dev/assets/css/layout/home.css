@@ -1,0 +1,52 @@
+/* 🌞 GLOBAL PAGE STYLE */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f6f2;
+    color: #2c2c2c;
+}
+
+/* 🌿 MAIN LAYOUT */
+
+main {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* 🟢 LEFT PANEL (filtres) */
+
+.leftSection {
+    width: 250px;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    height: fit-content;
+}
+
+.leftSection select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #e0ddd7;
+    background: #faf9f7;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.leftSection select:hover {
+    border-color: #d4af37;
+}
+
+/* 🟡 CENTER GRID */
+
+.centerSection {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}

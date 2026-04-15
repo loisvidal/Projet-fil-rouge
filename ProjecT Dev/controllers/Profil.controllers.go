@@ -1,6 +1,11 @@
 package controllers
 
-import "net/http"
+import (
+	"RedProject/models"
+	"net/http"
+)
+
+var ProfilConnect models.User
 
 func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 

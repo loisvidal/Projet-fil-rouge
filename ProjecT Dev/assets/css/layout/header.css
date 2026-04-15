@@ -1,0 +1,41 @@
+header {
+    background: white;
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+/* LOGO */
+
+.logoHeader img {
+    height: 50px;
+}
+
+/* 🔍 SEARCH */
+
+.searchHeader input {
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    width: 250px;
+    outline: none;
+}
+
+.searchHeader input:focus {
+    border-color: #d4af37;
+}
+
+/* 👤 USER */
+
+.connectHeader a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #2c2c2c;
+    font-weight: 500;
+}
+
+.connectHeader a:hover {
+    color: #d4af37;
+}

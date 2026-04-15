@@ -29,4 +29,7 @@ func InitRoutes() {
 	http.HandleFunc("/RedProject/Profil/Consult/", controllers.ViewOtherProfil) //.... Get
 	http.HandleFunc("/RedProject/Profil/mail", controllers.MailToOtherProfil) //...... Post
 
+	// Error
+	http.HandleFunc("/RedProject/error", controllers.ErrorHandler) //................. Get
+
 }

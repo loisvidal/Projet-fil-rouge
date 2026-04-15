@@ -1,0 +1,38 @@
+[
+    {
+        "NameProperty": "Appartement lumineux Paris 11",
+        "DescProprety": "Bel appartement 3 pièces avec balcon, proche métro et commerces.",
+        "IdProperty": 1,
+        "PriceProperty": 520000,
+        "IsSellProperty": false,
+        "IsLiked": true,
+        "ImgProperty": ["img1.jpg", "img2.jpg"]
+    },
+    {
+        "NameProperty": "Maison familiale Lyon",
+        "DescProprety": "Maison 5 pièces avec jardin et garage dans quartier calme.",
+        "IdProperty": 2,
+        "PriceProperty": 780000,
+        "IsSellProperty": false,
+        "IsLiked": false,
+        "ImgProperty": ["house1.jpg", "house2.jpg"]
+    },
+    {
+        "NameProperty": "Studio étudiant Bordeaux",
+        "DescProprety": "Studio meublé idéal pour étudiant, proche université.",
+        "IdProperty": 3,
+        "PriceProperty": 145000,
+        "IsSellProperty": true,
+        "IsLiked": false,
+        "ImgProperty": ["studio1.jpg"]
+    },
+    {
+        "NameProperty": "Villa avec piscine Nice",
+        "DescProprety": "Magnifique villa avec vue mer, piscine et grand terrain.",
+        "IdProperty": 4,
+        "PriceProperty": 1250000,
+        "IsSellProperty": false,
+        "IsLiked": true,
+        "ImgProperty": ["villa1.jpg", "villa2.jpg", "villa3.jpg"]
+    }
+]

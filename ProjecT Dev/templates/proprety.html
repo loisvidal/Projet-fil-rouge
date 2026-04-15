@@ -1,0 +1,16 @@
+{{define "property"}}
+<a href="" class="property">
+    <img src="{{.ImgProperty}}" alt="" class="imgProperty">
+    <p class="nameProperty">{{.NameProperty}}</p>
+    {{if .IsSellProperty false}}
+        <p class="priceProperty">{{.PriceProperty}}</p>
+        <form action="/RedProject/logement/buy" class="formProperty">
+            <button type="submit" class="buyButtonProperty">Buy Property</button>
+        </form>
+    {{else}}
+        <form action="/RedProject/logement/?{{.IdProperty}}" class="formProperty">
+            <button type="submit" class="consultButtonProperty">Consult Property</button>
+        </form>
+    {{end}}
+</a>
+{{end}}

@@ -14,7 +14,7 @@ func main() {
 	fs := http.FileServer(http.Dir("assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	log.Println("Serveur lancé sur http://localhost:8080")
+	log.Println("Serveur lancé sur http://localhost:8080/RedProject/home")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatalf("Erreur serveur : %v", err)

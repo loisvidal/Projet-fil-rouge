@@ -1,0 +1,70 @@
+{{define "home"}}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>YPlaza - home</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+</head>
+
+<body>
+    {{template "header" . }}
+
+    <main>
+        <!-- 🟢 LEFT SECTION -->
+        <section class="leftSection">
+
+            <!-- 🏠 Biens achetés -->
+            <select class="purchaseMade">
+                <option disabled selected>Biens achetés</option>
+                {{range .Profil.BuyProperty}}
+                <option value="{{.IdProperty}}">
+                    {{.NameProperty}} - {{.PriceProperty}}€
+                </option>
+                {{end}}
+            </select>
+
+            <!-- 💰 Biens vendus -->
+            <select class="sellMade">
+                <option disabled selected>Biens vendus</option>
+                {{range .Profil.SellProperty}}
+                <option value="{{.IdProperty}}">
+                    {{.NameProperty}} - {{.PriceProperty}}€
+                </option>
+                {{end}}
+            </select>
+
+        </section>
+
+        <!-- 🟡 CENTER SECTION -->
+        <section class="centerSection">
+
+            {{range .ListProperty}}
+            <div class="property-card">
+                <h2>{{.NameProperty}}</h2>
+                <p>{{.DescProprety}}</p>
+                <p><strong>Prix :</strong> {{.PriceProperty}} €</p>
+
+                {{if .IsSellProperty}}
+                <span class="badge">À vendre</span>
+                {{else}}
+                <span class="badge sold">Vendu</span>
+                {{end}}
+
+                <!-- Images -->
+                <div class="images">
+                    {{range .ImgProperty}}
+                    <img src="/assets/img/{{.}}" alt="property image">
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+        </section>
+    </main>
+
+</body>
+
+</html>
+{{end}}

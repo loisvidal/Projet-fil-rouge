@@ -1,0 +1,18 @@
+:root {
+    /* Arrière-plans */
+    --bg-main: #FDFBF7;        /* Blanc cassé / crème */
+    --bg-secondary: #F4F1EA;   /* Sections secondaires / cartes */
+
+    /* Couleurs de marque */
+    --primary-color: #1A365D;  /* Bleu nuit institutionnel */
+    --secondary-color: #C5A880; /* Or vieilli / laiton doux */
+    --primary-hover: #12284C;  /* Hover bleu plus sombre */
+
+    /* Textes */
+    --text-main: #2D3748;      /* Anthracite lisible */
+    --text-muted: #718096;     /* Gris secondaire */
+
+    /* Alertes & États */
+    --success-color: #2F855A;  /* Vert forêt */
+    --accent-color: #9B2C2C;   /* Rouge bordeaux */
+}
