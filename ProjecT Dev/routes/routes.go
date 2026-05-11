@@ -7,29 +7,28 @@ import (
 
 func InitRoutes() {
 	// home
-	http.HandleFunc("/RedProject/home", controllers.HomeHandler) //................... Get
-	http.HandleFunc("/RedProject/home/filter", controllers.FilterHome) //............. Post
+	http.HandleFunc("/red_project/home", controllers.HomeHandler) //................... Get
+	http.HandleFunc("/red_project/home/filter", controllers.FilterHome) //............. Post
 
 	// header
-	http.HandleFunc("/RedProject/search", controllers.Search) //...................... Post
+	http.HandleFunc("/red_project/search", controllers.Search) //...................... Post
 	
 	// connect 
-	http.HandleFunc("/RedProject/connect", controllers.ConnectHandler) //............. Get
-	http.HandleFunc("/RedProject/register", controllers.Register) //.................. Post
-	http.HandleFunc("/RedProject/login", controllers.Login) //........................ Post
+	http.HandleFunc("/red_project/register", controllers.Register) //.................. Post
+	http.HandleFunc("/red_project/login", controllers.Login) //........................ Post
 
 	// logement
-	http.HandleFunc("/RedProject/logement/", controllers.LogementHandler) //.......... Get
-	http.HandleFunc("/RedProject/logement/buy", controllers.BuyLogement) //........... Post
-	http.HandleFunc("/RedProject/logement/post", controllers.PostLogement) //......... Post
-	http.HandleFunc("/RedProject/logement/note", controllers.NoteLogement) //......... Post
+	http.HandleFunc("/red_project/logement/", controllers.LogementHandler) //.......... Get
+	http.HandleFunc("/red_project/logement/buy", controllers.BuyLogement) //........... Post
+	http.HandleFunc("/red_project/logement/post", controllers.PostLogement) //......... Post
+	http.HandleFunc("/red_project/logement/note", controllers.NoteLogement) //......... Post
 
 	// Profil
-	http.HandleFunc("/RedProject/Profil", controllers.ProfilHandler) //............... Get
-	http.HandleFunc("/RedProject/Profil/Consult/", controllers.ViewOtherProfil) //.... Get
-	http.HandleFunc("/RedProject/Profil/mail", controllers.MailToOtherProfil) //...... Post
+	http.HandleFunc("/red_project/Profil", controllers.ProfilHandler) //............... Get
+	http.HandleFunc("/red_project/Profil/Consult/", controllers.ViewOtherProfil) //.... Get
+	http.HandleFunc("/red_project/Profil/mail", controllers.MailToOtherProfil) //...... Post
 
 	// Error
-	http.HandleFunc("/RedProject/error", controllers.ErrorHandler) //................. Get
+	http.HandleFunc("/red_project/error", controllers.ErrorHandler) //................. Get
 
 }

@@ -27,6 +27,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/RedProject/error", http.StatusSeeOther)
 		return
 	}
+	fmt.Println(StructHome.Profil)
 	err = temp.ExecuteTemplate(w, "home", home)
 	if err != nil {
 		fmt.Println(models.Red, "Template error :", err, models.Reset)
@@ -40,7 +41,9 @@ func FilterHome(w http.ResponseWriter, r *http.Request) {
 func ReloadHome() (*models.Home, error) {
 	var err error
 
-	StructHome.Profil = ProfilConnect
+	if !StructHome.Profil.IsConnect {
+		StructHome.Profil = ProfilConnect
+	}
 	StructHome.ListProperty, err = LoadProperties("Data/dataProperty.json", false)
 	if err != nil {
 		return nil, err

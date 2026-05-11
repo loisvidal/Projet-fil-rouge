@@ -10,12 +10,10 @@
 
 <body>
     {{template "header" . }}
-
+    {{template "connect" .}}
     <main>
-        <!-- 🟢 LEFT SECTION -->
         <section class="leftSection">
 
-            <!-- 🏠 Biens achetés -->
             <select class="purchaseMade">
                 <option disabled selected>Biens achetés</option>
                 {{range .Profil.BuyProperty}}
@@ -25,7 +23,6 @@
                 {{end}}
             </select>
 
-            <!-- 💰 Biens vendus -->
             <select class="sellMade">
                 <option disabled selected>Biens vendus</option>
                 {{range .Profil.SellProperty}}
@@ -37,7 +34,6 @@
 
         </section>
 
-        <!-- 🟡 CENTER SECTION -->
         <section class="centerSection">
 
             {{range .ListProperty}}
@@ -52,7 +48,6 @@
                 <span class="badge sold">Vendu</span>
                 {{end}}
 
-                <!-- Images -->
                 <div class="images">
                     {{range .ImgProperty}}
                     <img src="/assets/img/{{.}}" alt="property image">
@@ -63,7 +58,7 @@
 
         </section>
     </main>
-
+    <script src="/assets/js/connect.js" async defer></script>
 </body>
 
 </html>

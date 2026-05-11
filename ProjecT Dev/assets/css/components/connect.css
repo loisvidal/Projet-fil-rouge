@@ -1,0 +1,127 @@
+/* assets/css/components/connect.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+
+/* --- LE FOND NOIR TRANSPARENT (OVERLAY) --- */
+body::before {
+    content: none; /* Caché par défaut */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+}
+
+body.modal-open::before {
+    content: '';
+}
+
+/* --- LA MODALE PRINCIPALE --- */
+.Connect {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.Connect.show {
+    display: flex;
+}
+
+/* --- LES SLIDES (LOGIN / REGISTER) --- */
+.login, .register {
+    min-width: 100%; /* Chaque slide prend 100% de la modale */
+    padding: 40px 30px;
+    box-sizing: border-box;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animation fluide */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- TYPOGRAPHIE ET ELEMENTS --- */
+h2 {
+    margin: 0 0 24px 0;
+    text-align: center;
+    color: #111827;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Inputs */
+input.connectName,
+input.connectPassword {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+}
+
+/* Boutons */
+button[type="submit"] {
+    background: #111827;
+    color: #ffffff;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+button[type="submit"]:hover {
+    background: #374151;
+}
+
+/* Liens de switch générés par le JS */
+.switch-text {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.switch-link {
+    color: #111827;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.switch-link:hover {
+    text-decoration: underline;
+}
+
+/* --- LOGIQUE D'ANIMATION --- */
+/* Quand la classe 'slide-active' est ajoutée via JS, on décale tout à gauche */
+.Connect.slide-active .login,
+.Connect.slide-active .register {
+    transform: translateX(-100%);
+}
