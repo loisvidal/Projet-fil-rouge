@@ -1,0 +1,262 @@
+{{define "analytics"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Analyses & Prévisions - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section class="detail-section">
+            <a href="/red_project/home" class="back-link">← Retour</a>
+            <h1>Analyses et prévisions</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">Ventes totales</div>
+                    <div class="stat-value">{{.Summary.TotalSales}}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">Prix moyen</div>
+                    <div class="stat-value">{{printf "%.0f" .Summary.AveragePrice}} €</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📐</div>
+                    <div class="stat-label">Prix/m² moyen</div>
+                    <div class="stat-value">{{printf "%.0f" .Summary.AveragePricePerSqm}} €</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-label">Revenu total</div>
+                    <div class="stat-value">{{printf "%.0f" .Summary.TotalRevenue}} €</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-label">Tendance</div>
+                    <div class="stat-value {{if eq .Summary.PriceTrend "hausse"}}trend-up{{else}}trend-down{{end}}">
+                        {{.Summary.PriceTrend}}
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📍</div>
+                    <div class="stat-label">Région active</div>
+                    <div class="stat-value">{{.Summary.MostActiveRegion}}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏠</div>
+                    <div class="stat-label">Type populaire</div>
+                    <div class="stat-value">{{.Summary.TopPropertyType}}</div>
+                </div>
+            </div>
+
+            <div class="predict-section">
+                <h2>Prédiction de prix</h2>
+                <p class="predict-subtitle">Estimation intelligente basée sur les ventes réelles, la localisation vérifiée et le prix au m²</p>
+
+                <form method="post" action="/red_project/analytics/predict" class="predict-form" id="predictForm">
+                    <div class="predict-grid">
+                        <div>
+                            <label for="property_type">Type de bien</label>
+                            <select name="property_type" id="property_type">
+                                {{range .Types}}
+                                <option value="{{.}}">{{index $.TypeLabels .}}</option>
+                                {{end}}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="rooms">Nombre de pièces</label>
+                            <input type="number" name="rooms" id="rooms" value="3" min="0" max="50">
+                        </div>
+                        <div>
+                            <label for="surface">Surface (m²)</label>
+                            <input type="number" name="surface" id="surface" value="70" min="1" max="100000">
+                        </div>
+                        <div>
+                            <label for="location">Ville</label>
+                            <input type="text" name="location" id="location" placeholder="ex: Marseille, Nice, Paris..." value="">
+                        </div>
+                        <div>
+                            <label for="postal_code">Code postal</label>
+                            <input type="text" name="postal_code" id="postal_code" placeholder="ex: 13001, 06000, 75001...">
+                        </div>
+                        <div class="predict-btn-wrap">
+                            <button type="submit" class="btn-primary">Estimer le prix</button>
+                        </div>
+                    </div>
+                    <p class="predict-hint">💡 Remplissez la ville ou le code postal pour une estimation localisée précise</p>
+                </form>
+
+                <div class="predict-result" id="predictResult" {{if not .Prediction}}style="display:none"{{end}}>
+                    {{if .Prediction}}
+                    <h3>Résultat de l'estimation</h3>
+                    <div class="predict-meta">
+                        {{.Prediction.TypeLabel}} · {{.Prediction.Rooms}} pièces · {{.Prediction.Surface}} m²
+                        {{if .Prediction.Location}} · {{.Prediction.Location}}{{end}}
+                        {{if .Prediction.PostalCode}} ({{.Prediction.PostalCode}}){{end}}
+                    </div>
+                    <div class="predict-price"><span class="price-label">Prix estimé</span><br>{{printf "%.0f" .Prediction.PredictedPrice}} €</div>
+                    <div class="predict-range">Fourchette : {{printf "%.0f" .Prediction.MinRange}} € – {{printf "%.0f" .Prediction.MaxRange}} €</div>
+                    <div class="predict-details">
+                        <span>Prix au m² : <strong>{{printf "%.0f" .Prediction.PricePerSqm}} €</strong></span>
+                        <span>Données : <strong>{{.Prediction.DataPoints}} ventes</strong></span>
+                    </div>
+                    <div class="predict-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width:{{printf "%.0f" (mul .Prediction.Confidence 100)}}%"></div>
+                        </div>
+                        Confiance : {{printf "%.0f" (mul .Prediction.Confidence 100)}}%
+                    </div>
+                    <div id="predictMap" class="predict-map" style="height:200px;margin-top:16px;border-radius:12px;display:none;"></div>
+                    {{end}}
+                </div>
+            </div>
+
+            <h2>Historique des ventes</h2>
+            {{if .Sales}}
+            <div class="table-wrap">
+            <table class="sales-table">
+                <thead>
+                    <tr><th>Type</th><th>Prix</th><th>€/m²</th><th>Pièces</th><th>Surface</th><th>Localisation</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                    {{range .Sales}}
+                    <tr>
+                        <td>{{.Type}}</td>
+                        <td><strong>{{printf "%.0f" .Price}} €</strong></td>
+                        <td>{{if gt .Surface 0.0}}{{printf "%.0f" (div .Price .Surface)}} €{{else}}—{{end}}</td>
+                        <td>{{.Rooms}}</td>
+                        <td>{{.Surface}} m²</td>
+                        <td>{{.Location}}</td>
+                        <td>{{.SoldAt.Format "02/01/2006"}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            </div>
+            {{else}}
+            <div class="empty-state">Aucune vente enregistrée pour le moment.</div>
+            {{end}}
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const data = new URLSearchParams(new FormData(form));
+            const res = await fetch('/red_project/analytics/predict', { method: 'POST', body: data });
+            const r = await res.json();
+
+            const el = document.getElementById('predictResult');
+            el.style.display = 'block';
+            el.innerHTML = `
+                <h3>Résultat de l'estimation</h3>
+                <div class="predict-meta">${(r.TypeLabel || r.Type)} · ${r.Rooms} pièces · ${r.Surface} m²${r.Location ? ' · ' + r.Location : ''}${r.PostalCode ? ' (' + r.PostalCode + ')' : ''}</div>
+                <div class="predict-price"><span class="price-label">Prix estimé</span><br>${Math.round(r.PredictedPrice)} €</div>
+                <div class="predict-range">Fourchette : ${Math.round(r.MinRange)} € – ${Math.round(r.MaxRange)} €</div>
+                <div class="predict-details">
+                    <span>Prix au m² : <strong>${Math.round(r.PricePerSqm)} €</strong></span>
+                    <span>Données : <strong>${r.DataPoints} ventes</strong></span>
+                </div>
+                <div class="predict-confidence">
+                    <div class="confidence-bar"><div class="confidence-fill" style="width:${Math.round(r.Confidence * 100)}%"></div></div>
+                    Confiance : ${Math.round(r.Confidence * 100)}%
+                </div>
+                <div id="predictMap" style="height:200px;margin-top:16px;border-radius:12px;${r.Latitude ? '' : 'display:none;'}"></div>
+            `;
+
+            if (r.Latitude && r.Longitude) {
+                setTimeout(() => {
+                    const mapEl = document.getElementById('predictMap');
+                    if (!mapEl._map) {
+                        const map = L.map(mapEl).setView([r.Latitude, r.Longitude], 12);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap',
+                            maxZoom: 18
+                        }).addTo(map);
+                        L.marker([r.Latitude, r.Longitude]).addTo(map)
+                            .bindPopup((r.TypeLabel || r.Type) + '<br>' + Math.round(r.PredictedPrice) + ' €');
+                        mapEl._map = map;
+                    }
+                }, 100);
+            }
+        });
+
+        {{if .Prediction}}
+        {{if and .Prediction.Latitude .Prediction.Longitude}}
+        setTimeout(() => {
+            const mapEl = document.getElementById('predictMap');
+            if (mapEl && !mapEl._map) {
+                const map = L.map(mapEl).setView([{{.Prediction.Latitude}}, {{.Prediction.Longitude}}], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap',
+                    maxZoom: 18
+                }).addTo(map);
+                L.marker([{{.Prediction.Latitude}}, {{.Prediction.Longitude}}]).addTo(map)
+                    .bindPopup('{{.Prediction.TypeLabel}}<br>{{printf "%.0f" .Prediction.PredictedPrice}} €');
+                mapEl._map = map;
+                mapEl.style.display = 'block';
+            }
+        }, 200);
+        {{end}}
+        {{end}}
+
+        document.getElementById('postal_code').addEventListener('blur', async function() {
+            if (this.value.length >= 4) {
+                try {
+                    const data = new URLSearchParams({ postal_code: this.value, country: 'France' });
+                    const res = await fetch('/red_project/analytics/geocode', { method: 'POST', body: data });
+                    const loc = await res.json();
+                    if (loc.verified && loc.city) {
+                        document.getElementById('location').value = loc.city;
+                    }
+                } catch(e) {}
+            }
+        });
+    </script>
+
+    <style>
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 32px; }
+        .stat-card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center; }
+        .stat-icon { font-size: 24px; margin-bottom: 8px; }
+        .stat-label { font-size: 11px; color: #8b8b8b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--terracotta); }
+        .predict-section { background: #fff; border-radius: 20px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+        .predict-subtitle { color: #8b8b8b; margin-top: -8px; margin-bottom: 24px; }
+        .predict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .predict-btn-wrap { display: flex; align-items: flex-end; }
+        .predict-btn-wrap button { width: 100%; }
+        .predict-hint { font-size: 12px; color: #8b8b8b; margin-top: 12px; }
+        .predict-result { margin-top: 24px; background: #faf8f5; border: 1px solid #e8e0d5; border-radius: 16px; padding: 28px; text-align: center; }
+        .predict-meta { color: #8b8b8b; font-size: 14px; margin-bottom: 8px; }
+        .predict-price { font-size: 40px; font-weight: 800; color: var(--terracotta); line-height: 1.2; margin: 12px 0; }
+        .price-label { font-size: 14px; font-weight: 400; color: #8b8b8b; }
+        .predict-range { color: #666; font-size: 14px; margin-bottom: 8px; }
+        .predict-details { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: #666; margin-bottom: 12px; }
+        .predict-confidence { font-size: 13px; color: #666; max-width: 300px; margin: 0 auto; }
+        .confidence-bar { height: 6px; background: #e8e0d5; border-radius: 3px; margin-bottom: 6px; overflow: hidden; }
+        .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--terracotta), var(--gold)); border-radius: 3px; transition: width 0.6s ease; }
+        .predict-map { border: 1px solid #e8e0d5; overflow: hidden; }
+        .sales-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .sales-table th { padding: 12px 14px; text-align: left; background: var(--sand); color: var(--text-dark); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sales-table td { padding: 10px 14px; border-bottom: 1px solid #f0ebe3; }
+        .sales-table tr:hover td { background: #faf8f5; }
+        .table-wrap { overflow-x: auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .trend-up { color: var(--olive) !important; }
+        .trend-down { color: #DC2626 !important; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #8b8b8b; background: #fff; border-radius: 16px; }
+        @media (max-width: 768px) { .predict-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</body>
+</html>
+{{end}}

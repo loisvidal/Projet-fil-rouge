@@ -1,23 +1,32 @@
 {{define "header"}}
 <header>
-    <a href="/RedProject/home" class="logoHeader">
-        <img src="/assets/img/Complete_logo.png" alt="">
+    <a href="/red_project/home" class="logoHeader">
+        <img src="/assets/img/Complete_logo.png" alt="YPlaza">
     </a>
 
-    <div class="searchHeader">
-        <form action="" method="post">
-            <input type="text" name="searchHeader" id="searchHeader" placeholder="search...">
-            <button id="searchButton" type="submit"></button>
-        </form>
-    </div>
+    <nav class="navHeader">
+        <a href="/red_project/home">Accueil</a>
+        <a href="/red_project/auctions">Enchères</a>
+        <a href="/red_project/analytics">Analyses</a>
+    </nav>
 
     <div class="connectHeader">
         {{if .Profil.IsConnect}}
-            <a href="/logout" class="isConnect_register">Logout</a>
-            <a href="/profile" class="isConnect_login">{{.Profil.NameUser}}</a>
+            {{if .Profil.IsConfirmed}}
+                <span class="user-welcome">Bienvenue, {{.Profil.NameUser}}</span>
+            {{else}}
+                <span class="user-welcome confirm-pending">Email à confirmer</span>
+            {{end}}
+            {{if .Profil.IsAdmin}}
+                <a href="/red_project/admin/users" class="admin-link">Administration</a>
+            {{end}}
+            <a href="/red_project/Profil" class="isConnect_login">{{.Profil.NameUser}}</a>
+            <form action="/red_project/logout" method="post" class="logout-form">
+                <button type="submit" class="logout-btn">Déconnexion</button>
+            </form>
         {{else}}
-            <button class="isConnect_register">Register</button>
-            <button class="isConnect_login">Login</button>
+            <button class="isConnect_register modal-trigger">Inscription</button>
+            <button class="isConnect_login modal-trigger">Connexion</button>
         {{end}}
     </div>
 </header>

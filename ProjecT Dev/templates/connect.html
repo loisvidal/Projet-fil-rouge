@@ -1,39 +1,36 @@
 {{define "connect"}}
-<!DOCTYPE html>
+<div class="modal-container">
+    <div class="overlay modal-trigger">
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/assets/css/components/connect.css">
-    </head>
-    <body>
-        <div class="Connect">
-            <div class="login">
+    </div>
+    <div class="modal">
+        <button class="close-modal modal-trigger">X</button>
+        <div class="connect">
+            <div class="login active">
                 <h2>Login</h2>
-                <form action="/red_project/login" method="post">
-                    <label for="userConnect">Pseudo / Email :</label>
-                    <input type="text" name="userConnect" id="loginName" class="connectName">
-                    <label for="userPassword">Mot de passe : </label>
-                    <input type="password" name="userPassword" id="loginPassword" class="connectPassword"
-                    ><button type="submit">Login</button>
+                <form action="" method="post">
+                    <label for="loginEmailName">Email or Username :</label>
+                    <input type="text" id="loginEmailName" name="loginEmailName" class="input-connect" placeholder="email or username....">
+                    <label for="password">Password :</label>
+                    <input type="password" id="password" name="password" class="input-connect" placeholder="password....">
+                    <button type="submit">Login</button>
                 </form>
+                <button class="switch-register">Create an account</button>
             </div>
             <div class="register">
                 <h2>Register</h2>
-                <form action="/red_project/register" method="post">
-                    <label for="userConnect">Pseudo / Email :</label>
-                    <input type="text" name="userConnect" id="registerName" class="connectName">
-                    <label for="userPassword">Mot de passe : </label>
-                    <input type="password" name="userPassword" id="registerPassword" class="connectPassword">
+                <form action="" method="post">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" class="input-connect" placeholder="email....">
+                    <label for="username">Username :</label>
+                    <input type="text" id="username" name="username" class="input-connect" placeholder="Username....">
+                    <label for="password">Password :</label>
+                    <input type="password" id="password" name="password" class="input-connect" placeholder="password....">
                     <button type="submit">Register</button>
                 </form>
+                <button class="switch-login">Back to login</button>
             </div>
         </div>
-        
-        <script src="" async defer></script>
-    </body>
-</html>
+    </div>
+</div>
 {{end}}

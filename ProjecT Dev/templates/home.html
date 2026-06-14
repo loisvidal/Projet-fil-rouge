@@ -1,65 +1,110 @@
 {{define "home"}}
 <!DOCTYPE html>
-<html>
-
+<html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>YPlaza - home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>YPlaza - Immobilier</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
 </head>
-
 <body>
     {{template "header" . }}
     {{template "connect" .}}
-    <main>
-        <section class="leftSection">
 
-            <select class="purchaseMade">
+    {{if .Profil.IsConnect}}
+        {{if not .Profil.IsConfirmed}}
+        <div class="confirm-banner">
+            <p>Un email de confirmation vous a été envoyé. Vérifiez votre boîte mail et cliquez sur le lien pour activer votre compte (valable 2 minutes).</p>
+        </div>
+        {{end}}
+    {{end}}
+
+    <main>
+        <aside class="leftSection">
+            {{if .Profil.IsConnect}}
+            <h3>Mes biens</h3>
+            <select class="purchaseMade" aria-label="Biens achetés">
                 <option disabled selected>Biens achetés</option>
                 {{range .Profil.BuyProperty}}
-                <option value="{{.IdProperty}}">
-                    {{.NameProperty}} - {{.PriceProperty}}€
-                </option>
-                {{end}}
-            </select>
-
-            <select class="sellMade">
-                <option disabled selected>Biens vendus</option>
-                {{range .Profil.SellProperty}}
-                <option value="{{.IdProperty}}">
-                    {{.NameProperty}} - {{.PriceProperty}}€
-                </option>
-                {{end}}
-            </select>
-
-        </section>
-
-        <section class="centerSection">
-
-            {{range .ListProperty}}
-            <div class="property-card">
-                <h2>{{.NameProperty}}</h2>
-                <p>{{.DescProprety}}</p>
-                <p><strong>Prix :</strong> {{.PriceProperty}} €</p>
-
-                {{if .IsSellProperty}}
-                <span class="badge">À vendre</span>
+                <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
                 {{else}}
-                <span class="badge sold">Vendu</span>
+                <option disabled>Aucun achat</option>
                 {{end}}
+            </select>
 
-                <div class="images">
-                    {{range .ImgProperty}}
-                    <img src="/assets/img/{{.}}" alt="property image">
-                    {{end}}
-                </div>
+            <select class="sellMade" aria-label="Mes annonces">
+                <option disabled selected>Mes annonces</option>
+                {{range .Profil.SellProperty}}
+                <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
+                {{else}}
+                <option disabled>Aucune annonce</option>
+                {{end}}
+            </select>
+
+            <hr>
+            <a href="/red_project/logement/post" class="btn-link">+ Publier une annonce</a>
+            <a href="/red_project/auctions" class="btn-link">Enchères en cours</a>
+            {{else}}
+            <div class="left-panel-info">
+                <p>Connectez-vous pour voir vos biens, publier des annonces et participer aux enchères.</p>
             </div>
             {{end}}
+            <hr>
+            <h3>Filtrer</h3>
+            <form method="post" class="filter-form">
+                <label for="filter-type">Type</label>
+                <select name="type" id="filter-type">
+                    <option value="">Tous</option>
+                    <option value="house">Maison</option>
+                    <option value="apartment">Appartement</option>
+                    <option value="studio">Studio</option>
+                    <option value="loft">Loft</option>
+                    <option value="villa">Villa</option>
+                    <option value="townhouse">Maison de ville</option>
+                    <option value="penthouse">Penthouse</option>
+                    <option value="commercial">Local commercial</option>
+                    <option value="land">Terrain</option>
+                </select>
+                <label for="filter-min">Prix min</label>
+                <input type="number" name="min_price" id="filter-min" placeholder="0">
+                <label for="filter-max">Prix max</label>
+                <input type="number" name="max_price" id="filter-max" placeholder="999999">
+                <button type="submit">Filtrer</button>
+            </form>
+            <hr>
+            <a href="/red_project/analytics" class="btn-link">Analyses & Prévisions</a>
+        </aside>
 
+        <section class="centerSection">
+            {{range .ListProperty}}
+            <article class="property-card" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
+                {{if .ImgProperty}}
+                <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" loading="lazy">
+                {{end}}
+                <div class="card-body">
+                    <h2>{{.NameProperty}}</h2>
+                    <div class="card-price">{{.PriceProperty}} €</div>
+                    <div class="card-features">
+                        {{if .Type}}<span>{{.Type}}</span>{{end}}
+                        {{if and .Rooms (gt .Rooms 0)}}<span>{{.Rooms}} pièces</span>{{end}}
+                        {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                        {{if .Location}}<span>{{.Location}}</span>{{end}}
+                    </div>
+                    <p class="card-desc">{{.DescProprety}}</p>
+                    {{if .IsSellProperty}}
+                    <span class="badge">À vendre</span>
+                    {{else}}
+                    <span class="badge sold">Vendu</span>
+                    {{end}}
+                </div>
+            </article>
+            {{else}}
+            <p class="empty-state">Aucun bien disponible pour le moment.</p>
+            {{end}}
         </section>
     </main>
-    <script src="/assets/js/connect.js" async defer></script>
-</body>
 
+    <script src="/assets/js/connect.js" defer></script>
+</body>
 </html>
 {{end}}

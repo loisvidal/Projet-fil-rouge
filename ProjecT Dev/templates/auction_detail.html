@@ -1,0 +1,90 @@
+{{define "auction_detail"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enchère - {{.Auction.PropertyName}} - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section class="detail-section">
+            <a href="/red_project/auctions" class="back-link">← Toutes les enchères</a>
+
+            <h1>{{.Auction.PropertyName}}</h1>
+
+            <div class="detail-features">
+                <span class="detail-price" style="font-size:24px;">{{.Auction.CurrentPrice}} €</span>
+                <span>Départ : {{.Auction.StartPrice}} €</span>
+                <span>Pas : {{.Auction.MinBidStep}} €</span>
+                <span>{{.Auction.BidCount}} offre(s)</span>
+            </div>
+
+            <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
+                Temps restant : <strong><span class="countdown">{{.RemainingSeconds}}s</span></strong>
+            </div>
+
+            {{if .Auction.IsActive}}
+                {{if .Profil.IsConnect}}
+                <form action="/red_project/auction/bid" method="post" class="bid-form">
+                    <input type="hidden" name="auction_id" value="{{.Auction.ID}}">
+                    <label for="amount">Votre enchère (minimum {{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}} €)</label>
+                    <input type="number" name="amount" id="amount" step="0.01" min="{{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}}" required>
+                    <button type="submit">Enchérir</button>
+                </form>
+                {{else}}
+                <p style="color:var(--text-muted)">Connectez-vous pour enchérir.</p>
+                {{end}}
+            {{else}}
+                <p class="sold">Cette enchère est terminée.</p>
+                {{if .Auction.WinnerID}}
+                <p>Gagnant : {{.Auction.WinnerName}}</p>
+                {{end}}
+            {{end}}
+
+            <h2>Propriété</h2>
+            <p>{{.Property.DescProprety}}</p>
+            <div class="detail-features">
+                <span>{{.Property.Type}}</span>
+                <span>{{.Property.Rooms}} pièces</span>
+                <span>{{.Property.Surface}} m²</span>
+                <span>{{.Property.Location}}</span>
+            </div>
+
+            <h2>Historique des offres</h2>
+            {{if .Bids}}
+            <ul class="bids-list">
+                {{range .Bids}}
+                <li>{{.UserName}} — <strong>{{.Amount}} €</strong> <small>({{.CreatedAt.Format "02/01/2006 15:04"}})</small></li>
+                {{end}}
+            </ul>
+            {{else}}
+            <p style="color:var(--text-muted)">Aucune offre pour le moment. Soyez le premier !</p>
+            {{end}}
+        </section>
+    </main>
+
+    <script src="/assets/js/connect.js" defer></script>
+    <script>
+        const timer = document.querySelector('.auction-timer');
+        if (timer) {
+            const span = timer.querySelector('.countdown');
+            let secs = parseInt(timer.dataset.seconds);
+            setInterval(() => {
+                secs--;
+                if (secs <= 0) { span.textContent = 'Terminé'; location.reload(); return; }
+                const h = Math.floor(secs / 3600);
+                const m = Math.floor((secs % 3600) / 60);
+                const s = secs % 60;
+                span.textContent = h+'h '+m+'m '+s+'s';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+{{end}}

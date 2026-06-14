@@ -1,63 +1,72 @@
 package controllers
 
 import (
+	"RedProject/database"
 	models "RedProject/models"
 	"fmt"
+	"html/template"
+	"math"
 	"net/http"
-	"text/template"
 )
 
 var temp *template.Template
 var StructHome models.Home
 
 func Init() {
+	funcMap := template.FuncMap{
+		"add": func(a, b float64) float64 {
+			return a + b
+		},
+		"mul": func(a, b float64) float64 {
+			return a * b
+		},
+		"sub": func(a, b float64) float64 {
+			return a - b
+		},
+		"div": func(a, b float64) float64 {
+			if b == 0 {
+				return 0
+			}
+			return a / b
+		},
+		"round": func(a float64) float64 {
+			return math.Round(a)
+		},
+	}
+
 	var err error
-	temp, err = template.ParseGlob("templates/*.html")
+	temp, err = template.New("").Funcs(funcMap).ParseGlob("templates/*.html")
 	if err != nil {
 		fmt.Println("Erreur lors du chargement des templates :", err)
 	}
 }
 
-// home
-
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	database.CloseExpiredAuctions()
+
 	home, err := ReloadHome()
 	if err != nil {
 		fmt.Println(models.Red, "Property loading error : ", err, models.Reset)
-		http.Redirect(w, r, "/RedProject/error", http.StatusSeeOther)
+		http.Redirect(w, r, "/red_project/error", http.StatusSeeOther)
 		return
 	}
-	fmt.Println(StructHome.Profil)
 	err = temp.ExecuteTemplate(w, "home", home)
 	if err != nil {
 		fmt.Println(models.Red, "Template error :", err, models.Reset)
 	}
 }
 
-func FilterHome(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func ReloadHome() (*models.Home, error) {
-	var err error
-
 	if !StructHome.Profil.IsConnect {
 		StructHome.Profil = ProfilConnect
 	}
-	StructHome.ListProperty, err = LoadProperties("Data/dataProperty.json", false)
+	properties, err := database.GetAllProperties()
 	if err != nil {
 		return nil, err
 	}
+	StructHome.ListProperty = properties
 	return &StructHome, nil
 }
-
-// header
-
-func Search(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// Error
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "error", nil)

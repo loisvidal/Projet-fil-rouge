@@ -1,0 +1,135 @@
+{{define "admin_users"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administration - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <style>
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .admin-header h1 { margin: 0; font-size: 28px; }
+        .admin-stats { display: flex; gap: 16px; margin-bottom: 32px; }
+        .admin-stats .stat-card { background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); flex: 1; border: 1px solid var(--sand-dark); text-align: center; }
+        .admin-stats .stat-card h3 { font-family: Inter, sans-serif; margin: 0 0 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-table-wrap { overflow-x: auto; background: var(--bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--sand-dark); }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .admin-table th { padding: 12px 16px; text-align: left; background: var(--sand); color: var(--text-dark); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-table td { padding: 12px 16px; border-bottom: 1px solid var(--sand-dark); }
+        .admin-table tr:hover td { background: #faf8f5; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-admin { background: var(--ocean); color: #fff; }
+        .badge-user { background: var(--sand); color: var(--text-muted); }
+        .badge-confirmed { background: var(--olive); color: #fff; }
+        .badge-unconfirmed { background: var(--gold); color: #fff; }
+        .actions { display: flex; gap: 6px; }
+        .btn-sm { padding: 5px 12px; border: none; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; font-weight: 500; text-decoration: none; transition: var(--transition); }
+        .btn-sm:hover { opacity: 0.85; }
+        .btn-danger { background: #DC2626; color: #fff; }
+        .btn-warning { background: var(--gold); color: #fff; }
+        .edit-form { background: var(--bg-card); padding: 28px; border-radius: var(--radius-md); margin-bottom: 32px; max-width: 500px; border: 1px solid var(--sand-dark); }
+        .edit-form h2 { margin-top: 0; }
+        .edit-form label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .edit-form input { width: 100%; padding: 10px 14px; border: 1px solid var(--sand-dark); border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 14px; box-sizing: border-box; background: var(--bg-warm); }
+        .edit-form input:focus { outline: none; border-color: var(--terracotta); box-shadow: 0 0 0 3px rgba(212,118,74,0.1); }
+        .edit-form .form-actions { display: flex; gap: 8px; }
+        .admin-container .btn-primary { text-decoration: none; }
+        @media (max-width: 768px) { .admin-container { padding: 16px; } .admin-stats { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    {{template "header" .}}
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Administration</h1>
+            <a href="/red_project/home" class="btn-primary">← Accueil</a>
+        </div>
+
+        {{if .EditUser}}
+        <div class="edit-form">
+            <h2>Modifier #{{.EditUser.IdUser}}</h2>
+            <form action="/red_project/admin/users/edit" method="POST">
+                <input type="hidden" name="id" value="{{.EditUser.IdUser}}">
+                <label for="name">Nom</label>
+                <input type="text" name="name" id="name" value="{{.EditUser.NameUser}}" required>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" value="{{.EditUser.Mail}}" required>
+                <label for="password">Mot de passe</label>
+                <input type="text" name="password" id="password" value="{{.EditUser.Password}}" required>
+                <div class="form-actions">
+                    <button type="submit" class="btn-sm" style="background:var(--terracotta);color:#fff;padding:10px 20px;">Enregistrer</button>
+                    <a href="/red_project/admin/users" class="btn-sm btn-warning" style="padding:10px 20px;display:inline-block;">Annuler</a>
+                </div>
+            </form>
+        </div>
+        {{end}}
+
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h3>Total utilisateurs</h3>
+                <div class="stat-value" style="font-size:28px;font-weight:700;color:var(--terracotta);">{{.TotalUsers}}</div>
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Users}}
+                <tr>
+                    <td>{{.IdUser}}</td>
+                    <td><strong>{{.NameUser}}</strong></td>
+                    <td style="color:var(--text-muted)">{{.Mail}}</td>
+                    <td>
+                        {{if .IsAdmin}}
+                            <span class="badge badge-admin">Admin</span>
+                        {{else}}
+                            <span class="badge badge-user">Utilisateur</span>
+                        {{end}}
+                    </td>
+                    <td>
+                        {{if .IsConfirmed}}
+                            <span class="badge badge-confirmed">Confirmé</span>
+                        {{else}}
+                            <span class="badge badge-unconfirmed">En attente</span>
+                        {{end}}
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="/red_project/admin/users/edit?id={{.IdUser}}" class="btn-sm" style="background:var(--terracotta);color:#fff;">Modifier</a>
+                            <form action="/red_project/admin/users/toggle-admin" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{.IdUser}}">
+                                <button type="submit" class="btn-sm btn-warning">
+                                    {{if .IsAdmin}}Rétrograder{{else}}Promouvoir{{end}}
+                                </button>
+                            </form>
+                            <form action="/red_project/admin/users/delete" method="POST" style="display:inline;" onsubmit="return confirm('Supprimer {{.NameUser}} ?')">
+                                <input type="hidden" name="id" value="{{.IdUser}}">
+                                <button type="submit" class="btn-sm btn-danger">Supprimer</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    {{template "footer"}}
+</body>
+</html>
+{{end}}

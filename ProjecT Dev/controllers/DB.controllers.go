@@ -1,45 +1,76 @@
 package controllers
 
 import (
-    "encoding/json"
-    "os"
-    "log"
-    "RedProject/models" 
+	"RedProject/database"
+	"RedProject/models"
+	"log"
+	"net/http"
+	"time"
 )
 
-const filePath = "Data/userList.json"
 var CheckUser models.User
 
-func getUsers() []models.User {
-    file, err := os.ReadFile(filePath)
-    if err != nil {
-        return []models.User{}
-    }
-    var users []models.User
-    json.Unmarshal(file, &users)
-    return users
+func CheckUserConnect(identifier string, password string) bool {
+	u, err := database.GetUserByLogin(identifier)
+	if err != nil {
+		return false
+	}
+
+	if u.LockedUntil != nil && u.LockedUntil.After(time.Now()) {
+		log.Printf("Compte %s verrouillé jusqu'à %v", identifier, u.LockedUntil)
+		return false
+	}
+
+	if !database.CheckPassword(u.Password, password) {
+		database.IncrementFailedAttempts(u.IdUser)
+		return false
+	}
+
+	database.ResetFailedAttempts(u.IdUser)
+	u.IsConnect = true
+	CheckUser = u
+	CheckUser.IsConnect = true
+	return true
 }
 
-func CheckUserConnect(user string, pwd string) bool {
-    users := getUsers()
-    for _, u := range users {
-        if u.NameUser == user && u.Password == pwd {
-			CheckUser = u
-			CheckUser.IsConnect = true
-            return true
-        }
-    }
-    return false
+func WriteUserConnect(newUser models.User) (string, error) {
+	id, token, err := database.CreateUser(newUser)
+	if err != nil {
+		return "", err
+	}
+	newUser.IdUser = int(id)
+	return token, nil
 }
 
-func WriteUserConnect(newUser models.User) {
-    users := getUsers()
-    newUser.IdUser = len(users) + 1
-    users = append(users, newUser)
+func requireLogin(w http.ResponseWriter, r *http.Request) bool {
+	if !StructHome.Profil.IsConnect {
+		http.Error(w, "Vous devez être connecté pour effectuer cette action", http.StatusUnauthorized)
+		return false
+	}
+	if !StructHome.Profil.IsConfirmed {
+		http.Error(w, "Vous devez confirmer votre email pour effectuer cette action", http.StatusForbidden)
+		return false
+	}
+	return true
+}
 
-    data, err := json.MarshalIndent(users, "", "  ")
-    if err != nil {
-        log.Fatal(err)
-    }
-    os.WriteFile(filePath, data, 0644)
+func ConfirmEmailHandler(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+	if token == "" {
+		http.Error(w, "Token manquant", http.StatusBadRequest)
+		return
+	}
+
+	err := database.ConfirmUser(token)
+	if err != nil {
+		log.Printf("Erreur confirmation: %v", err)
+		http.Error(w, "Lien de confirmation invalide ou expiré", http.StatusGone)
+		return
+	}
+
+	if StructHome.Profil.IsConnect {
+		StructHome.Profil.IsConfirmed = true
+	}
+
+	http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 }

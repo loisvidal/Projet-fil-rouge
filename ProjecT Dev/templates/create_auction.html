@@ -1,0 +1,41 @@
+{{define "create_auction"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Créer une enchère - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section class="detail-section">
+            <a href="/red_project/auctions" class="back-link">← Retour aux enchères</a>
+            <h1>Créer une enchère</h1>
+
+            <form action="/red_project/auction/create" method="post" class="bid-form">
+                <label for="property_id">ID du bien</label>
+                <input type="number" name="property_id" id="property_id" required placeholder="Entrez l'ID du bien">
+
+                <label for="start_price">Prix de départ (€)</label>
+                <input type="number" name="start_price" id="start_price" step="0.01" min="1" required>
+
+                <label for="min_bid_step">Pas d'enchère (€)</label>
+                <input type="number" name="min_bid_step" id="min_bid_step" step="0.01" min="1" value="100">
+
+                <label for="duration">Durée (heures)</label>
+                <input type="number" name="duration" id="duration" min="1" max="720" value="24">
+
+                <button type="submit">Créer l'enchère</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/assets/js/connect.js" defer></script>
+</body>
+</html>
+{{end}}

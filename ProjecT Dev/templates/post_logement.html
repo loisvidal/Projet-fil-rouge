@@ -1,0 +1,77 @@
+{{define "post_logement"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Publier une annonce - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section class="detail-section">
+            <a href="/red_project/home" class="back-link">← Retour à l'accueil</a>
+            <h1>Publier une annonce</h1>
+
+            <form action="/red_project/logement/post" method="post" class="bid-form">
+                <label for="name">Nom du bien</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="property_type">Type</label>
+                <select name="property_type" id="property_type">
+                    <option value="house">Maison</option>
+                    <option value="apartment">Appartement</option>
+                    <option value="studio">Studio</option>
+                    <option value="loft">Loft</option>
+                    <option value="villa">Villa</option>
+                    <option value="townhouse">Maison de ville</option>
+                    <option value="penthouse">Penthouse</option>
+                    <option value="commercial">Local commercial</option>
+                    <option value="land">Terrain</option>
+                </select>
+
+                <label for="price">Prix (€)</label>
+                <input type="number" name="price" id="price" step="0.01" min="1" required>
+
+                <label for="surface">Surface (m²)</label>
+                <input type="number" name="surface" id="surface" step="0.1" min="1">
+
+                <label for="rooms">Nombre de pièces</label>
+                <input type="number" name="rooms" id="rooms" min="0">
+
+                <label for="location">Localisation</label>
+                <input type="text" name="location" id="location" placeholder="ex: Marseille, Nice, Paris...">
+
+                <label for="postal_code">Code postal</label>
+                <input type="text" name="postal_code" id="postal_code" placeholder="ex: 13001">
+
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="5"></textarea>
+
+                <button type="submit">Publier l'annonce</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/assets/js/connect.js" defer></script>
+    <script>
+        document.getElementById('postal_code').addEventListener('blur', async function() {
+            if (this.value.length >= 4 && !document.getElementById('location').value) {
+                try {
+                    const data = new URLSearchParams({ postal_code: this.value, country: 'France' });
+                    const res = await fetch('/red_project/analytics/geocode', { method: 'POST', body: data });
+                    const loc = await res.json();
+                    if (loc.verified && loc.city) {
+                        document.getElementById('location').value = loc.city;
+                    }
+                } catch(e) {}
+            }
+        });
+    </script>
+</body>
+</html>
+{{end}}

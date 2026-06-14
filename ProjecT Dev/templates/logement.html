@@ -1,0 +1,104 @@
+{{define "logement"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.Property.NameProperty}} - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section class="detail-section">
+            <a href="/red_project/home" class="back-link">← Retour à l'accueil</a>
+
+            <div class="detail-gallery">
+                {{range .Property.ImgProperty}}
+                <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy">
+                {{end}}
+            </div>
+
+            <h1>{{.Property.NameProperty}}</h1>
+            <div class="detail-price">{{.Property.PriceProperty}} €
+                {{if and .Property.Surface (gt .Property.Surface 0.0)}}
+                <span class="price-per-sqm">({{printf "%.0f" (div .Property.PriceProperty .Property.Surface)}} €/m²)</span>
+                {{end}}
+            </div>
+
+            <div class="detail-features">
+                {{if .Property.Type}}<span>{{.Property.Type}}</span>{{end}}
+                {{if and .Property.Rooms (gt .Property.Rooms 0)}}<span>{{.Property.Rooms}} pièces</span>{{end}}
+                {{if .Property.Surface}}<span>{{.Property.Surface}} m²</span>{{end}}
+                {{if .Property.Location}}<span>{{.Property.Location}}</span>{{end}}
+                {{if and .Property.Surface (gt .Property.Surface 0.0)}}
+                <span class="price-per-sqm-badge">{{printf "%.0f" (div .Property.PriceProperty .Property.Surface)}} €/m²</span>
+                {{end}}
+            </div>
+
+            <p class="detail-desc">{{.Property.DescProprety}}</p>
+
+            {{if .Property.IsSellProperty}}
+                {{if .Profil.IsConnect}}
+                <form action="/red_project/logement/buy" method="post">
+                    <input type="hidden" name="id" value="{{.Property.IdProperty}}">
+                    <button type="submit" class="btn-primary">Acheter ce bien</button>
+                </form>
+                {{else}}
+                <p class="login-prompt">Connectez-vous pour acheter ce bien.</p>
+                {{end}}
+            {{else}}
+                <span class="badge sold">Vendu</span>
+            {{end}}
+
+            <div id="propertyMap" class="property-map" style="height:250px;border-radius:16px;margin:20px 0;border:1px solid var(--sand-dark);"></div>
+
+            {{if .Auction}}
+            <section class="auction-section">
+                <h2>Enchère en cours</h2>
+                <p>Prix actuel : <strong>{{.Auction.CurrentPrice}} €</strong></p>
+                <p>Nombre d'offres : {{.Auction.BidCount}}</p>
+                <a href="/red_project/auction/{{.Auction.ID}}" class="btn-link">Voir l'enchère →</a>
+            </section>
+            {{end}}
+        </section>
+    </main>
+
+    <script src="/assets/js/connect.js" defer></script>
+    <script>
+        (async function() {
+            const location = {{.Property.Location}};
+            if (location) {
+                try {
+                    const data = new URLSearchParams({ city: location, country: 'France' });
+                    const res = await fetch('/red_project/analytics/geocode', { method: 'POST', body: data });
+                    const loc = await res.json();
+                    if (loc.verified) {
+                        const map = L.map('propertyMap').setView([loc.latitude, loc.longitude], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap',
+                            maxZoom: 18
+                        }).addTo(map);
+                        L.marker([loc.latitude, loc.longitude]).addTo(map)
+                            .bindPopup('<strong>{{.Property.NameProperty}}</strong><br>{{.Property.PriceProperty}} €');
+                    }
+                } catch(e) {
+                    document.getElementById('propertyMap').style.display = 'none';
+                }
+            }
+        })();
+    </script>
+
+    <style>
+        .price-per-sqm { font-size: 16px; font-weight: 400; color: var(--text-muted); }
+        .price-per-sqm-badge { background: var(--olive); color: #fff; }
+        .property-map { overflow: hidden; }
+    </style>
+</body>
+</html>
+{{end}}

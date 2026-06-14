@@ -1,127 +1,192 @@
-/* assets/css/components/connect.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
+.modal-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
 }
 
-/* --- LE FOND NOIR TRANSPARENT (OVERLAY) --- */
-body::before {
-    content: none; /* Caché par défaut */
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+.modal-container.active {
+    display: block;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(38, 70, 83, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 999;
+    -webkit-backdrop-filter: blur(4px);
 }
 
-body.modal-open::before {
-    content: '';
-}
-
-/* --- LA MODALE PRINCIPALE --- */
-.Connect {
-    display: none; /* Caché par défaut */
-    position: fixed;
+.modal {
+    width: 95%;
+    max-width: 440px;
+    min-width: 300px;
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 380px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
+    border: 1px solid var(--sand-dark);
+    animation: modalIn 0.3s ease;
 }
 
-.Connect.show {
-    display: flex;
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
 
-/* --- LES SLIDES (LOGIN / REGISTER) --- */
-.login, .register {
-    min-width: 100%; /* Chaque slide prend 100% de la modale */
-    padding: 40px 30px;
-    box-sizing: border-box;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Animation fluide */
-    display: flex;
-    flex-direction: column;
-}
-
-/* --- TYPOGRAPHIE ET ELEMENTS --- */
-h2 {
-    margin: 0 0 24px 0;
-    text-align: center;
-    color: #111827;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* Inputs */
-input.connectName,
-input.connectPassword {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input:focus {
-    border-color: #111827;
-    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
-}
-
-/* Boutons */
-button[type="submit"] {
-    background: #111827;
-    color: #ffffff;
-    padding: 14px;
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 8px;
-}
-
-button[type="submit"]:hover {
-    background: #374151;
-}
-
-/* Liens de switch générés par le JS */
-.switch-text {
-    text-align: center;
-    margin-top: 24px;
+    border-radius: 50%;
     font-size: 14px;
-    color: #6b7280;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--cream);
+    color: var(--text-muted);
+    transition: var(--transition);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
 }
 
-.switch-link {
-    color: #111827;
+.close-modal:hover {
+    background: #DC2626;
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+.connect {
+    padding: 40px 32px 32px;
+    overflow-x: hidden;
+}
+
+.login, .register {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login.active, .register.active {
+    display: flex;
+    animation: fade 0.4s ease;
+}
+
+@keyframes fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.connect h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--ocean);
+    margin-bottom: 4px;
+}
+
+.connect form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.connect label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.input-connect {
+    padding: 11px 14px;
+    border: 1px solid var(--sand-dark);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--text-dark);
+    transition: var(--transition);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-connect:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(224,122,95,0.1);
+}
+
+.connect form button[type="submit"] {
+    padding: 12px;
+    background: var(--terracotta);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    text-decoration: none;
+    transition: var(--transition);
+    font-family: var(--font-body);
+    margin-top: 4px;
 }
 
-.switch-link:hover {
-    text-decoration: underline;
+.connect form button[type="submit"]:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
 }
 
-/* --- LOGIQUE D'ANIMATION --- */
-/* Quand la classe 'slide-active' est ajoutée via JS, on décale tout à gauche */
-.Connect.slide-active .login,
-.Connect.slide-active .register {
-    transform: translateX(-100%);
+.switch-register, .switch-login {
+    padding: 10px;
+    background: transparent;
+    border: 1.5px solid var(--sand-dark);
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-body);
+    text-align: center;
+}
+
+.switch-register:hover, .switch-login:hover {
+    border-color: var(--terracotta);
+    color: var(--terracotta);
+    background: rgba(224,122,95,0.05);
+}
+
+@media (max-height: 600px) {
+    .modal {
+        top: 0;
+        transform: translate(-50%, 0);
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    @keyframes modalIn {
+        from { opacity: 0; transform: translate(-50%, -2%); }
+        to { opacity: 1; transform: translate(-50%, 0); }
+    }
+    .connect { padding: 28px 24px 24px; }
 }

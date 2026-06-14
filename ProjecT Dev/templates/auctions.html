@@ -1,0 +1,67 @@
+{{define "auctions"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enchères - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <link rel="stylesheet" href="/assets/css/components/connect.css">
+</head>
+<body>
+    {{template "header" .}}
+    {{template "connect" .}}
+
+    <main>
+        <section style="flex:1">
+            <div class="page-header">
+                <h1>Enchères en cours</h1>
+                {{if .Profil.IsConnect}}
+                <a href="/red_project/auction/create" class="btn-primary">+ Créer une enchère</a>
+                {{end}}
+            </div>
+
+            {{if .Auctions}}
+            <div class="auction-grid">
+                {{range .Auctions}}
+                <div class="auction-card">
+                    <h3>{{.PropertyName}}</h3>
+                    <div class="auction-price">{{.CurrentPrice}} €</div>
+                    <div class="auction-meta">Prix de départ : {{.StartPrice}} € · Pas : {{.MinBidStep}} €</div>
+                    <div class="auction-meta">{{.BidCount}} offre(s)</div>
+                    <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
+                        Temps restant : <span class="countdown">{{.RemainingSeconds}}s</span>
+                    </div>
+                    <a href="/red_project/auction/{{.ID}}" class="auction-cta">Voir l'enchère</a>
+                </div>
+                {{end}}
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <p>Aucune enchère en cours pour le moment.</p>
+                {{if .Profil.IsConnect}}
+                <a href="/red_project/auction/create" class="btn-primary">Créer la première enchère</a>
+                {{end}}
+            </div>
+            {{end}}
+        </section>
+    </main>
+
+    <script src="/assets/js/connect.js" defer></script>
+    <script>
+        document.querySelectorAll('.auction-timer').forEach(el => {
+            const span = el.querySelector('.countdown');
+            let secs = parseInt(el.dataset.seconds);
+            setInterval(() => {
+                secs--;
+                if (secs <= 0) { span.textContent = 'Terminé'; return; }
+                const h = Math.floor(secs / 3600);
+                const m = Math.floor((secs % 3600) / 60);
+                const s = secs % 60;
+                span.textContent = h+'h '+m+'m '+s+'s';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+{{end}}
