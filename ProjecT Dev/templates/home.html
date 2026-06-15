@@ -3,106 +3,219 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>YPlaza - Immobilier</title>
+    <title>YPlaza - L'Excellence Immobilière</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
-    {{template "header" . }}
+    {{template "header" .}}
     {{template "connect" .}}
 
     {{if .Profil.IsConnect}}
         {{if not .Profil.IsConfirmed}}
         <div class="confirm-banner">
-            <p>Un email de confirmation vous a été envoyé. Vérifiez votre boîte mail et cliquez sur le lien pour activer votre compte (valable 2 minutes).</p>
+            <p>Un email de confirmation vous a été envoyé. Vérifiez votre boîte mail pour activer votre compte (valable 2 minutes).</p>
         </div>
         {{end}}
     {{end}}
 
-    <main>
-        <aside class="leftSection">
-            {{if .Profil.IsConnect}}
-            <h3>Mes biens</h3>
-            <select class="purchaseMade" aria-label="Biens achetés">
-                <option disabled selected>Biens achetés</option>
-                {{range .Profil.BuyProperty}}
-                <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
-                {{else}}
-                <option disabled>Aucun achat</option>
-                {{end}}
-            </select>
-
-            <select class="sellMade" aria-label="Mes annonces">
-                <option disabled selected>Mes annonces</option>
-                {{range .Profil.SellProperty}}
-                <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
-                {{else}}
-                <option disabled>Aucune annonce</option>
-                {{end}}
-            </select>
-
-            <hr>
-            <a href="/red_project/logement/post" class="btn-link">+ Publier une annonce</a>
-            <a href="/red_project/auctions" class="btn-link">Enchères en cours</a>
-            {{else}}
-            <div class="left-panel-info">
-                <p>Connectez-vous pour voir vos biens, publier des annonces et participer aux enchères.</p>
-            </div>
-            {{end}}
-            <hr>
-            <h3>Filtrer</h3>
-            <form method="post" class="filter-form">
-                <label for="filter-type">Type</label>
-                <select name="type" id="filter-type">
-                    <option value="">Tous</option>
-                    <option value="house">Maison</option>
-                    <option value="apartment">Appartement</option>
-                    <option value="studio">Studio</option>
-                    <option value="loft">Loft</option>
-                    <option value="villa">Villa</option>
-                    <option value="townhouse">Maison de ville</option>
-                    <option value="penthouse">Penthouse</option>
-                    <option value="commercial">Local commercial</option>
-                    <option value="land">Terrain</option>
-                </select>
-                <label for="filter-min">Prix min</label>
-                <input type="number" name="min_price" id="filter-min" placeholder="0">
-                <label for="filter-max">Prix max</label>
-                <input type="number" name="max_price" id="filter-max" placeholder="999999">
-                <button type="submit">Filtrer</button>
-            </form>
-            <hr>
-            <a href="/red_project/analytics" class="btn-link">Analyses & Prévisions</a>
-        </aside>
-
-        <section class="centerSection">
-            {{range .ListProperty}}
-            <article class="property-card" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
-                {{if .ImgProperty}}
-                <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" loading="lazy">
-                {{end}}
-                <div class="card-body">
-                    <h2>{{.NameProperty}}</h2>
-                    <div class="card-price">{{.PriceProperty}} €</div>
-                    <div class="card-features">
-                        {{if .Type}}<span>{{.Type}}</span>{{end}}
-                        {{if and .Rooms (gt .Rooms 0)}}<span>{{.Rooms}} pièces</span>{{end}}
-                        {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
-                        {{if .Location}}<span>{{.Location}}</span>{{end}}
-                    </div>
-                    <p class="card-desc">{{.DescProprety}}</p>
-                    {{if .IsSellProperty}}
-                    <span class="badge">À vendre</span>
-                    {{else}}
-                    <span class="badge sold">Vendu</span>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="topLeft">
+                <span class="subtitle">L'EXCELLENCE IMMOBILIÈRE</span>
+                <h1>Trouvez la propriété<br>de vos rêves</h1>
+                <p>Une sélection exclusive de biens d'exception dans les plus belles régions de France.</p>
+                <div class="hero-buttons">
+                    <a href="#properties" class="btn btn-primary">VOIR LES BIENS</a>
+                    {{if .Profil.IsConnect}}
+                    <a href="/red_project/logement/post" class="btn btn-outline">PUBLIER UNE ANNONCE</a>
                     {{end}}
                 </div>
-            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEARCH BAR -->
+    <div class="container">
+        <div class="search-bar">
+            <form action="/red_project/home/filter" method="post" class="filter-form">
+                <div class="date">
+                    <p>TYPE DE BIEN</p>
+                    <select name="type" id="filter-type" class="filter-select">
+                        <option value="">Tous</option>
+                        <option value="house">Maison</option>
+                        <option value="apartment">Appartement</option>
+                        <option value="villa">Villa</option>
+                        <option value="loft">Loft</option>
+                    </select>
+                </div>
+                <div class="date">
+                    <p>PRIX MIN</p>
+                    <input type="number" name="min_price" id="filter-min" placeholder="0 €" class="filter-input">
+                </div>
+                <div class="date">
+                    <p>PRIX MAX</p>
+                    <input type="number" name="max_price" id="filter-max" placeholder="Max €" class="filter-input">
+                </div>
+                <button type="submit" class="btn btn-primary">RECHERCHER</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <section class="dashboard-section">
+        <div class="bottom user-dashboard container">
+            {{if .Profil.IsConnect}}
+                <div class="dashboard-card">
+                    <p>MES ACHATS</p>
+                    <select class="dashboard-select" aria-label="Biens achetés">
+                        <option disabled selected>Sélectionner un bien</option>
+                        {{range .Profil.BuyProperty}}
+                            <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
+                        {{else}}
+                            <option disabled>Aucun achat</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div class="dashboard-card center-card">
+                    <p>MES ANNONCES</p>
+                    <select class="dashboard-select" aria-label="Mes annonces">
+                        <option disabled selected>Sélectionner une annonce</option>
+                        {{range .Profil.SellProperty}}
+                            <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
+                        {{else}}
+                            <option disabled>Aucune annonce</option>
+                        {{end}}
+                    </select>
+                </div>
             {{else}}
-            <p class="empty-state">Aucun bien disponible pour le moment.</p>
+                <div class="dashboard-card empty-dashboard">
+                    <p>Connectez-vous pour gérer vos biens et participer aux enchères.</p>
+                </div>
             {{end}}
-        </section>
-    </main>
+        </div>
+    </section>
+
+    <!-- FEATURED PROPERTIES -->
+    <section class="featured-section" id="properties">
+        <div class="container">
+            <h2 class="section-title">Nos biens à la une</h2>
+            <p class="section-subtitle">Découvrez notre sélection de propriétés d'exception</p>
+
+            <div class="property-grid">
+                {{range .ListProperty}}
+                <article class="roomCard" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
+                    <div class="img-wrapper">
+                        {{if .ImgProperty}}
+                            <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" class="imgRoom" loading="lazy">
+                        {{else}}
+                            <div class="imgRoom placeholder-img"></div>
+                        {{end}}
+                        {{if .IsSellProperty}}
+                            <span class="badge">À vendre</span>
+                        {{else}}
+                            <span class="badge sold">Vendu</span>
+                        {{end}}
+                        <span class="roomLabel">{{.NameProperty}}</span>
+                    </div>
+                    <div class="property-info">
+                        <h3 class="price">{{.PriceProperty}} €</h3>
+                        <div class="features">
+                            {{if .Type}}<span>{{.Type}}</span>{{end}}
+                            {{if .Rooms}}<span>{{.Rooms}} p.</span>{{end}}
+                            {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                        </div>
+                    </div>
+                </article>
+                {{else}}
+                <p class="empty-state" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--grey);">Aucun bien disponible pour le moment.</p>
+                {{end}}
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES SECTION -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">Trouvez le bien qui vous correspond</h2>
+            <p class="section-subtitle">Parcourez nos catégories de biens d'exception</p>
+            <div class="categories-grid">
+                <a href="/red_project/home" class="category-card">
+                    <div style="height:100%;background:var(--gold);display:flex;align-items:flex-end;padding:20px;">
+                        <div>
+                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Appartements</h3>
+                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">12 biens disponibles</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="/red_project/home" class="category-card">
+                    <div style="height:100%;background:var(--grey);display:flex;align-items:flex-end;padding:20px;">
+                        <div>
+                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Maisons & Villas</h3>
+                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">8 biens disponibles</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="/red_project/home" class="category-card">
+                    <div style="height:100%;background:var(--black);display:flex;align-items:flex-end;padding:20px;">
+                        <div>
+                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Lofts & Studios</h3>
+                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">5 biens disponibles</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="/red_project/home" class="category-card">
+                    <div style="height:100%;background:var(--gold);display:flex;align-items:flex-end;padding:20px;">
+                        <div>
+                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Commerces</h3>
+                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">3 biens disponibles</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <section class="stats-bar">
+        <div class="stats-bar-inner container">
+            <div class="stat-item">
+                <h3>8</h3>
+                <p>Biens disponibles</p>
+            </div>
+            <div class="stat-item">
+                <h3>3</h3>
+                <p>Enchères en cours</p>
+            </div>
+            <div class="stat-item">
+                <h3>4</h3>
+                <p>Ventes réalisées</p>
+            </div>
+            <div class="stat-item">
+                <h3>2</h3>
+                <p>Agences partenaires</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section">
+        <div class="about-inner container">
+            <div class="about-text">
+                <h2>YPlaza L'Excellence Immobilière</h2>
+                <p>Fondée avec la passion de l'immobilier d'exception, YPlaza vous accompagne dans tous vos projets immobiliers. Vente, achat, enchères et analyses prédictives — notre plateforme allie technologie et expertise pour vous offrir le meilleur service.</p>
+                <a href="/red_project/analytics" class="btn btn-outline">DÉCOUVRIR NOS ANALYSES</a>
+            </div>
+            <div class="about-image">
+                <div style="height:400px;background:var(--gold);"></div>
+            </div>
+        </div>
+    </section>
+
+    {{template "footer" .}}
 
     <script src="/assets/js/connect.js" defer></script>
 </body>

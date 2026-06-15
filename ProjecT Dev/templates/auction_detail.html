@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Enchère - {{.Auction.PropertyName}} - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
@@ -16,39 +16,39 @@
         <section class="detail-section">
             <a href="/red_project/auctions" class="back-link">← Toutes les enchères</a>
 
-            <h1>{{.Auction.PropertyName}}</h1>
+            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 16px;">{{.Auction.PropertyName}}</h1>
 
             <div class="detail-features">
-                <span class="detail-price" style="font-size:24px;">{{.Auction.CurrentPrice}} €</span>
-                <span>Départ : {{.Auction.StartPrice}} €</span>
-                <span>Pas : {{.Auction.MinBidStep}} €</span>
-                <span>{{.Auction.BidCount}} offre(s)</span>
+                <span class="detail-price" style="font-size:28px;color:var(--gold);font-weight:700;">{{.Auction.CurrentPrice}} €</span>
+                <span style="color:var(--grey);">Départ : <strong style="color:var(--black);">{{.Auction.StartPrice}} €</strong></span>
+                <span style="color:var(--grey);">Pas : <strong style="color:var(--black);">{{.Auction.MinBidStep}} €</strong></span>
+                <span style="color:var(--grey);">{{.Auction.BidCount}} offre(s)</span>
             </div>
 
-            <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
-                Temps restant : <strong><span class="countdown">{{.RemainingSeconds}}s</span></strong>
+            <div class="auction-timer" data-seconds="{{.RemainingSeconds}}" style="font-size:18px;color:var(--gold);font-weight:600;margin:16px 0 24px;">
+                Temps restant : <span class="countdown" style="color:var(--black);">{{.RemainingSeconds}}s</span>
             </div>
 
             {{if .Auction.IsActive}}
                 {{if .Profil.IsConnect}}
                 <form action="/red_project/auction/bid" method="post" class="bid-form">
                     <input type="hidden" name="auction_id" value="{{.Auction.ID}}">
-                    <label for="amount">Votre enchère (minimum {{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}} €)</label>
+                    <label for="amount" style="font-size:13px;font-weight:500;color:var(--grey);margin-bottom:6px;display:block;">Votre enchère (minimum {{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}} €)</label>
                     <input type="number" name="amount" id="amount" step="0.01" min="{{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}}" required>
-                    <button type="submit">Enchérir</button>
+                    <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Enchérir</button>
                 </form>
                 {{else}}
-                <p style="color:var(--text-muted)">Connectez-vous pour enchérir.</p>
+                <p style="color:var(--grey);font-style:italic;">Connectez-vous pour enchérir.</p>
                 {{end}}
             {{else}}
-                <p class="sold">Cette enchère est terminée.</p>
+                <p class="sold" style="font-size:18px;">Cette enchère est terminée.</p>
                 {{if .Auction.WinnerID}}
-                <p>Gagnant : {{.Auction.WinnerName}}</p>
+                <p style="font-size:16px;color:var(--black);margin-top:8px;">Gagnant : <strong>{{.Auction.WinnerName}}</strong></p>
                 {{end}}
             {{end}}
 
-            <h2>Propriété</h2>
-            <p>{{.Property.DescProprety}}</p>
+            <h2 style="font-size:22px;color:var(--black);margin:40px 0 16px;">Propriété</h2>
+            <p style="color:var(--grey);line-height:1.7;margin-bottom:16px;">{{.Property.DescProprety}}</p>
             <div class="detail-features">
                 <span>{{.Property.Type}}</span>
                 <span>{{.Property.Rooms}} pièces</span>
@@ -56,15 +56,18 @@
                 <span>{{.Property.Location}}</span>
             </div>
 
-            <h2>Historique des offres</h2>
+            <h2 style="font-size:22px;color:var(--black);margin:40px 0 16px;">Historique des offres</h2>
             {{if .Bids}}
             <ul class="bids-list">
                 {{range .Bids}}
-                <li>{{.UserName}} — <strong>{{.Amount}} €</strong> <small>({{.CreatedAt.Format "02/01/2006 15:04"}})</small></li>
+                <li style="padding:12px 0;border-bottom:1px solid var(--grey);display:flex;justify-content:space-between;align-items:center;">
+                    <span style="color:var(--black);font-weight:500;">{{.UserName}}</span>
+                    <span><strong style="color:var(--gold);">{{.Amount}} €</strong> <small style="color:var(--grey);margin-left:8px;">({{.CreatedAt.Format "02/01/2006 15:04"}})</small></span>
+                </li>
                 {{end}}
             </ul>
             {{else}}
-            <p style="color:var(--text-muted)">Aucune offre pour le moment. Soyez le premier !</p>
+            <p style="color:var(--grey);font-style:italic;">Aucune offre pour le moment. Soyez le premier !</p>
             {{end}}
         </section>
     </main>

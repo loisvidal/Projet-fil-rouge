@@ -79,7 +79,13 @@ func isPortAvailable(port string) bool {
 func main() {
 	kill80 := flag.Bool("kill-port-80", false, "Tue le processus utilisant le port 80")
 	kill8080 := flag.Bool("kill-port-8080", false, "Tue le processus utilisant le port 8080")
+	seed := flag.Bool("seed", false, "Réinitialise la base et insère des données de démonstration")
 	flag.Parse()
+
+	if *seed {
+		database.ResetAndSeed()
+		return
+	}
 
 	if *kill80 {
 		killProcessOnPort("80")

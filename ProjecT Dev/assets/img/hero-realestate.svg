@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="500" viewBox="0 0 600 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c9a96e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a88d5a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="roof" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8d5b5;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#e8d5b5;stop-opacity:0.05" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="500" fill="url(#bg)" rx="8"/>
+  <text x="300" y="35" font-family="Georgia,serif" font-size="16" fill="white" text-anchor="middle" opacity="0.5" letter-spacing="4">YPLAZA</text>
+  <g transform="translate(130,60)">
+    <polygon points="170,10 310,90 30,90" fill="rgba(255,255,255,0.12)"/>
+    <rect x="50" y="90" width="240" height="300" rx="2" fill="rgba(255,255,255,0.08)"/>
+    <rect x="70" y="110" width="70" height="50" rx="2" fill="rgba(255,255,255,0.15)"/>
+    <rect x="155" y="110" width="115" height="50" rx="2" fill="rgba(255,255,255,0.1)"/>
+    <rect x="70" y="175" width="200" height="80" rx="2" fill="rgba(255,255,255,0.06)"/>
+    <rect x="70" y="270" width="200" height="12" rx="2" fill="rgba(255,255,255,0.08)"/>
+    <circle cx="115" cy="315" r="3" fill="white" opacity="0.3"/>
+    <rect x="90" y="335" width="50" height="55" rx="2" fill="rgba(255,255,255,0.1)"/>
+    <polygon points="90,335 115,310 140,335" fill="rgba(255,255,255,0.08)"/>
+  </g>
+  <g transform="translate(20,0)" opacity="0.3">
+    <circle cx="40" cy="460" r="3" fill="white"/>
+    <circle cx="560" cy="460" r="2" fill="white"/>
+    <circle cx="300" cy="475" r="2.5" fill="white"/>
+  </g>
+</svg>

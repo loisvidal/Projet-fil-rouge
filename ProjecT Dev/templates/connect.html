@@ -1,34 +1,37 @@
 {{define "connect"}}
 <div class="modal-container">
-    <div class="overlay modal-trigger">
-
-    </div>
+    <div class="overlay modal-trigger"></div>
     <div class="modal">
-        <button class="close-modal modal-trigger">X</button>
+        <button class="close-modal modal-trigger">&times;</button>
         <div class="connect">
             <div class="login active">
-                <h2>Login</h2>
-                <form action="" method="post">
-                    <label for="loginEmailName">Email or Username :</label>
-                    <input type="text" id="loginEmailName" name="loginEmailName" class="input-connect" placeholder="email or username....">
-                    <label for="password">Password :</label>
-                    <input type="password" id="password" name="password" class="input-connect" placeholder="password....">
-                    <button type="submit">Login</button>
+                <h2>Connexion</h2>
+                <p>Accédez à votre espace YPlaza</p>
+                <form action="/red_project/login" method="post">
+                    <label for="loginEmailName">Email ou identifiant</label>
+                    <input type="text" id="loginEmailName" name="identifier" class="input-connect" placeholder="email ou identifiant..." required>
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="input-connect" placeholder="mot de passe..." required>
+                    <button type="submit">Se connecter</button>
                 </form>
-                <button class="switch-register">Create an account</button>
+                <button class="switch-register">Créer un compte</button>
             </div>
             <div class="register">
-                <h2>Register</h2>
-                <form action="" method="post">
-                    <label for="email">Email :</label>
-                    <input type="email" id="email" name="email" class="input-connect" placeholder="email....">
-                    <label for="username">Username :</label>
-                    <input type="text" id="username" name="username" class="input-connect" placeholder="Username....">
-                    <label for="password">Password :</label>
-                    <input type="password" id="password" name="password" class="input-connect" placeholder="password....">
-                    <button type="submit">Register</button>
+                <h2>Inscription</h2>
+                <p>Rejoignez YPlaza</p>
+                <p style="font-size:0.8rem;color:var(--grey);font-style:italic;margin-bottom:4px;">Les inscriptions sont fermées</p>
+                <form action="/red_project/register" method="post">
+                    <label for="reg-username">Nom d'utilisateur</label>
+                    <input type="text" id="reg-username" name="username" class="input-connect" placeholder="Nom d'utilisateur..." required>
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" name="email" class="input-connect" placeholder="email..." required>
+                    <label for="reg-password">Mot de passe</label>
+                    <input type="password" id="reg-password" name="password" class="input-connect" placeholder="mot de passe..." minlength="6" required>
+                    <label for="reg-confirm">Confirmer le mot de passe</label>
+                    <input type="password" id="reg-confirm" name="confirm_password" class="input-connect" placeholder="confirmez le mot de passe..." required>
+                    <button type="submit">Créer mon compte</button>
                 </form>
-                <button class="switch-login">Back to login</button>
+                <button class="switch-login">Déjà un compte</button>
             </div>
         </div>
     </div>

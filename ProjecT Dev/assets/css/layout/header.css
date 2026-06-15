@@ -1,133 +1,149 @@
 header {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 20px 0;
     width: 100%;
-    height: 72px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 24px;
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--sand-dark);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .logoHeader {
-    width: 140px;
-    height: 40px;
+    width: auto;
+    height: 36px;
     display: flex;
     align-items: center;
     flex-shrink: 0;
 }
 
 .logoHeader img {
-    width: 100%;
     height: 100%;
+    width: auto;
     object-fit: contain;
 }
 
 .navHeader {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 30px;
 }
 
 .navHeader a {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--black);
     transition: var(--transition);
-    position: relative;
-    padding-bottom: 2px;
-}
-
-.navHeader a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--terracotta);
-    border-radius: 1px;
-    transition: var(--transition);
+    text-decoration: none;
 }
 
 .navHeader a:hover {
-    color: var(--terracotta);
-}
-
-.navHeader a:hover::after {
-    width: 100%;
+    color: var(--gold);
 }
 
 .connectHeader {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 0;
+    gap: 40px;
+    margin: 0 20px;
     flex-shrink: 0;
 }
 
 .user-welcome {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: 0.9rem;
+    color: var(--black);
     white-space: nowrap;
+    font-weight: 400;
 }
 
 .confirm-pending {
     color: var(--gold);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 .admin-link {
     font-size: 0.8rem;
-    color: var(--ocean-light);
-    font-weight: 600;
+    color: var(--gold);
+    font-weight: 500;
     padding: 5px 12px;
-    border-radius: var(--radius-sm);
-    background: rgba(42,157,143,0.1);
+    border: 1px solid var(--gold);
     transition: var(--transition);
 }
 
 .admin-link:hover {
-    background: rgba(42,157,143,0.2);
+    color: var(--azure);
+    border-color: var(--azure);
 }
 
 .isConnect_login, .isConnect_register {
-    padding: 8px 20px;
+    padding: 8px 22px;
     border: none;
-    border-radius: 50px;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
-    font-family: var(--font-body);
+    font-family: Arial, sans-serif;
+    line-height: 1;
 }
 
 .isConnect_login {
-    background: var(--terracotta);
-    color: #fff;
+    background: var(--gold);
+    color: var(--white);
 }
 
 .isConnect_login:hover {
-    background: var(--terracotta-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-glow);
+    opacity: 0.8;
+    transform: translateY(-2px);
 }
 
 .isConnect_register {
     background: transparent;
-    color: var(--text-dark);
-    border: 1.5px solid var(--sand-darker);
+    color: var(--black);
+    border: 1px solid var(--grey);
 }
 
 .isConnect_register:hover {
-    border-color: var(--terracotta);
-    color: var(--terracotta);
-    background: rgba(224,122,95,0.05);
+    opacity: 0.8;
+    transform: translateY(-2px);
+}
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--grey);
+    background: var(--white);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.theme-toggle .theme-icon-light { display: inline; }
+.theme-toggle .theme-icon-dark { display: none; }
+
+[data-theme="dark"] .theme-toggle .theme-icon-light { display: none; }
+[data-theme="dark"] .theme-toggle .theme-icon-dark { display: inline; }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle .theme-icon-light { display: none; }
+    :root:not([data-theme="light"]) .theme-toggle .theme-icon-dark { display: inline; }
+}
+
+[data-theme="dark"] .theme-toggle {
+    background: rgb(30,30,30);
+    border-color: var(--grey);
 }
 
 .logout-form {
@@ -135,35 +151,109 @@ header {
 }
 
 .logout-btn {
-    padding: 6px 14px;
+    padding: 6px 16px;
     border: none;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 400;
     cursor: pointer;
     transition: var(--transition);
     background: transparent;
-    color: var(--text-light);
-    font-family: var(--font-body);
+    color: var(--grey);
+    font-family: Arial, sans-serif;
 }
 
 .logout-btn:hover {
-    color: #DC2626;
-    background: rgba(220,38,38,0.06);
+    color: #ef4444;
+}
+
+[data-theme="dark"] header { background-color: rgb(20,20,20); }
+[data-theme="dark"] .navHeader a { color: var(--black); }
+[data-theme="dark"] .user-welcome { color: var(--black); }
+[data-theme="dark"] .isConnect_register { color: var(--black); border-color: var(--grey); }
+[data-theme="dark"] .admin-link { color: var(--gold); border-color: var(--gold); }
+[data-theme="dark"] .admin-link:hover { color: var(--azure); border-color: var(--azure); }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) header { background-color: rgb(20,20,20); }
+    :root:not([data-theme="light"]) .navHeader a { color: var(--black); }
+    :root:not([data-theme="light"]) .user-welcome { color: var(--black); }
+    :root:not([data-theme="light"]) .isConnect_register { color: var(--black); border-color: var(--grey); }
+    :root:not([data-theme="light"]) .admin-link { color: var(--gold); border-color: var(--gold); }
+    :root:not([data-theme="light"]) .admin-link:hover { color: var(--azure); border-color: var(--azure); }
+}
+
+    .navHeader a {
+        color: var(--black);
+    }
+
+    .user-welcome {
+        color: var(--black);
+    }
+
+    .isConnect_register {
+        color: var(--black);
+        border-color: var(--grey);
+    }
+
+    .admin-link {
+        color: var(--gold);
+        border-color: var(--gold);
+    }
+
+    .admin-link:hover {
+        color: var(--azure);
+        border-color: var(--azure);
+    }
 }
 
 @media (max-width: 768px) {
-    header { padding: 0 16px; height: 64px; }
-    .navHeader { gap: 16px; }
-    .navHeader a { font-size: 0.8rem; }
-    .logoHeader { width: 100px; }
-    .connectHeader { gap: 6px; }
-    .isConnect_login, .isConnect_register { padding: 6px 14px; font-size: 0.75rem; }
-    .user-welcome { display: none; }
+    header {
+        padding: 16px;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .navHeader {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .navHeader a {
+        font-size: 0.85rem;
+    }
+
+    .logoHeader {
+        height: 28px;
+    }
+
+    .connectHeader {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .isConnect_login, .isConnect_register {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+    }
+
+    .user-welcome {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
-    .navHeader a { font-size: 0.7rem; }
-    .isConnect_login, .isConnect_register { padding: 5px 10px; font-size: 0.7rem; }
-    .logoHeader { width: 80px; }
+    .navHeader a {
+        font-size: 0.75rem;
+    }
+
+    .isConnect_login, .isConnect_register {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+    }
+
+    .logoHeader {
+        height: 24px;
+    }
 }

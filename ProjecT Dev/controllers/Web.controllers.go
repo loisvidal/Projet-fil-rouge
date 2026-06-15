@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"math"
 	"net/http"
+	"strings"
 )
 
 var temp *template.Template
@@ -66,6 +67,59 @@ func ReloadHome() (*models.Home, error) {
 	}
 	StructHome.ListProperty = properties
 	return &StructHome, nil
+}
+
+func HomeRedirect(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+	http.Redirect(w, r, "/red_project/home", http.StatusMovedPermanently)
+}
+
+type AuthPageData struct {
+	Profil models.User
+	Error  string
+}
+
+func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
+	if StructHome.Profil.IsConnect {
+		http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
+		return
+	}
+	if r.Method == http.MethodPost {
+		identifier := strings.TrimSpace(r.FormValue("identifier"))
+		password := r.FormValue("password")
+
+		if identifier == "" || password == "" {
+			temp.ExecuteTemplate(w, "login", AuthPageData{Profil: StructHome.Profil, Error: "Tous les champs sont requis."})
+			return
+		}
+
+		if CheckUserConnect(identifier, password) {
+			StructHome.Profil = CheckUser
+			http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
+			return
+		}
+
+		temp.ExecuteTemplate(w, "login", AuthPageData{Profil: StructHome.Profil, Error: "Identifiants incorrects ou compte verrouillé."})
+		return
+	}
+
+	temp.ExecuteTemplate(w, "login", AuthPageData{Profil: StructHome.Profil})
+}
+
+func RegisterPageHandler(w http.ResponseWriter, r *http.Request) {
+	if StructHome.Profil.IsConnect {
+		http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
+		return
+	}
+	if r.Method == http.MethodPost {
+		temp.ExecuteTemplate(w, "register", AuthPageData{Profil: StructHome.Profil, Error: "L'inscription est fermée. Utilisez le compte de démonstration : toto / titi123"})
+		return
+	}
+
+	temp.ExecuteTemplate(w, "register", AuthPageData{Profil: StructHome.Profil})
 }
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {

@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/smtp"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -77,6 +79,38 @@ func BuyLogement(w http.ResponseWriter, r *http.Request) {
 
 	prop, _ := database.GetPropertyByID(id)
 	database.RecordSale(prop, prop.PriceProperty)
+
+	if StructHome.Profil.Mail != "" {
+		subject := "Confirmation d'achat YPlaza"
+		body := fmt.Sprintf(`Bonjour %s,
+
+Félicitations ! Vous avez acheté le bien suivant :
+
+%s
+Prix : %.0f €
+Localisation : %s
+
+Merci de votre confiance.
+L'équipe YPlaza`, StructHome.Profil.NameUser, prop.NameProperty, prop.PriceProperty, prop.Location)
+
+		from := "alexandre.petitfrere@ynov.com"
+		addr := os.Getenv("SMTP_ADDR")
+		host := os.Getenv("SMTP_HOST")
+		smtpUser := os.Getenv("SMTP_USER")
+		smtpPass := os.Getenv("SMTP_PASS")
+
+		if addr != "" && host != "" {
+			auth := smtp.PlainAuth("", smtpUser, smtpPass, host)
+			msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\n%s", from, StructHome.Profil.Mail, subject, body)
+			if err := smtp.SendMail(addr, auth, from, []string{StructHome.Profil.Mail}, []byte(msg)); err != nil {
+				fmt.Printf("Erreur envoi confirmation achat à %s: %v\n", StructHome.Profil.Mail, err)
+			} else {
+				fmt.Printf("Confirmation d'achat envoyée à %s\n", StructHome.Profil.Mail)
+			}
+		} else {
+			fmt.Printf("[ACHAT] De: %s\nPour: %s\n%s\n%s\n", from, StructHome.Profil.Mail, subject, body)
+		}
+	}
 
 	http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 }

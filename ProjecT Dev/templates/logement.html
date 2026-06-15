@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{.Property.NameProperty}} - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
@@ -18,14 +18,14 @@
         <section class="detail-section">
             <a href="/red_project/home" class="back-link">← Retour à l'accueil</a>
 
-            <div class="detail-gallery">
+            <div class="detail-gallery" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:20px 0 28px;scroll-snap-type:x mandatory;">
                 {{range .Property.ImgProperty}}
-                <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy">
+                <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy" style="height:400px;object-fit:cover;scroll-snap-align:start;flex-shrink:0;">
                 {{end}}
             </div>
 
-            <h1>{{.Property.NameProperty}}</h1>
-            <div class="detail-price">{{.Property.PriceProperty}} €
+            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:0 0 12px;">{{.Property.NameProperty}}</h1>
+            <div class="detail-price" style="font-size:28px;font-weight:700;color:var(--gold);margin-bottom:8px;">{{.Property.PriceProperty}} €
                 {{if and .Property.Surface (gt .Property.Surface 0.0)}}
                 <span class="price-per-sqm">({{printf "%.0f" (div .Property.PriceProperty .Property.Surface)}} €/m²)</span>
                 {{end}}
@@ -36,34 +36,31 @@
                 {{if and .Property.Rooms (gt .Property.Rooms 0)}}<span>{{.Property.Rooms}} pièces</span>{{end}}
                 {{if .Property.Surface}}<span>{{.Property.Surface}} m²</span>{{end}}
                 {{if .Property.Location}}<span>{{.Property.Location}}</span>{{end}}
-                {{if and .Property.Surface (gt .Property.Surface 0.0)}}
-                <span class="price-per-sqm-badge">{{printf "%.0f" (div .Property.PriceProperty .Property.Surface)}} €/m²</span>
-                {{end}}
             </div>
 
-            <p class="detail-desc">{{.Property.DescProprety}}</p>
+            <p class="detail-desc" style="color:var(--grey);line-height:1.8;font-size:16px;margin:24px 0;">{{.Property.DescProprety}}</p>
 
             {{if .Property.IsSellProperty}}
                 {{if .Profil.IsConnect}}
-                <form action="/red_project/logement/buy" method="post">
+                <form action="/red_project/logement/buy" method="post" style="margin:24px 0;">
                     <input type="hidden" name="id" value="{{.Property.IdProperty}}">
-                    <button type="submit" class="btn-primary">Acheter ce bien</button>
+                    <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;font-size:16px;padding:14px 36px;">Acheter ce bien</button>
                 </form>
                 {{else}}
-                <p class="login-prompt">Connectez-vous pour acheter ce bien.</p>
+                <p class="login-prompt" style="color:var(--grey);font-style:italic;margin:24px 0;">Connectez-vous pour acheter ce bien.</p>
                 {{end}}
             {{else}}
-                <span class="badge sold">Vendu</span>
+                <span class="badge sold" style="margin:24px 0;display:inline-block;">Vendu</span>
             {{end}}
 
-            <div id="propertyMap" class="property-map" style="height:250px;border-radius:16px;margin:20px 0;border:1px solid var(--sand-dark);"></div>
+            <div id="propertyMap" class="property-map" style="height:250px;margin:20px 0;"></div>
 
             {{if .Auction}}
-            <section class="auction-section">
-                <h2>Enchère en cours</h2>
-                <p>Prix actuel : <strong>{{.Auction.CurrentPrice}} €</strong></p>
-                <p>Nombre d'offres : {{.Auction.BidCount}}</p>
-                <a href="/red_project/auction/{{.Auction.ID}}" class="btn-link">Voir l'enchère →</a>
+            <section class="auction-section" style="padding:24px;margin:24px 0;">
+                <h2 style="font-size:20px;color:var(--black);margin:0 0 16px;">Enchère en cours</h2>
+                <p style="color:var(--grey);margin-bottom:8px;">Prix actuel : <strong style="color:var(--gold);font-size:18px;">{{.Auction.CurrentPrice}} €</strong></p>
+                <p style="color:var(--grey);margin-bottom:16px;">Nombre d'offres : {{.Auction.BidCount}}</p>
+                <a href="/red_project/auction/{{.Auction.ID}}" class="btn btn-primary" style="text-decoration:none;display:inline-block;">Voir l'enchère →</a>
             </section>
             {{end}}
         </section>
@@ -95,8 +92,6 @@
     </script>
 
     <style>
-        .price-per-sqm { font-size: 16px; font-weight: 400; color: var(--text-muted); }
-        .price-per-sqm-badge { background: var(--olive); color: #fff; }
         .property-map { overflow: hidden; }
     </style>
 </body>

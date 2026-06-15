@@ -1,0 +1,28 @@
+{{define "legal"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.Title}} - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <script src="/assets/js/theme.js"></script>
+    <style>
+        .legal-page { padding: 40px 24px 80px; max-width: 800px; margin: 0 auto; min-height: 60vh; }
+        .legal-page h1 { color: var(--gold); margin-bottom: 32px; }
+        .legal-page h2 { color: var(--azure); margin-top: 32px; margin-bottom: 12px; }
+        .legal-page p { color: var(--grey); line-height: 1.8; margin-bottom: 16px; font-size: 0.95rem; }
+        .legal-page ul { color: var(--grey); line-height: 1.8; margin-bottom: 16px; padding-left: 24px; }
+        .legal-page ul li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    {{template "header" .}}
+    <main class="legal-page">
+        <h1>{{.Title}}</h1>
+        {{.Content}}
+    </main>
+    {{template "footer"}}
+</body>
+</html>
+{{end}}

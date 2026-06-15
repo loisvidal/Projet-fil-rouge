@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Créer une enchère - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
@@ -15,9 +15,9 @@
     <main>
         <section class="detail-section">
             <a href="/red_project/auctions" class="back-link">← Retour aux enchères</a>
-            <h1>Créer une enchère</h1>
+            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 32px;">Créer une enchère</h1>
 
-            <form action="/red_project/auction/create" method="post" class="bid-form">
+            <form action="/red_project/auction/create" method="post" class="edit-form" style="max-width:500px;margin:0;">
                 <label for="property_id">ID du bien</label>
                 <input type="number" name="property_id" id="property_id" required placeholder="Entrez l'ID du bien">
 
@@ -30,7 +30,9 @@
                 <label for="duration">Durée (heures)</label>
                 <input type="number" name="duration" id="duration" min="1" max="720" value="24">
 
-                <button type="submit">Créer l'enchère</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Créer l'enchère</button>
+                </div>
             </form>
         </section>
     </main>

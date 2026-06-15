@@ -48,9 +48,9 @@ func migrate() {
 	queries := []string{
 		`CREATE TABLE IF NOT EXISTS users (
 			id INT AUTO_INCREMENT PRIMARY KEY,
-			name VARCHAR(255) NOT NULL UNIQUE,
+			name VARCHAR(191) NOT NULL UNIQUE,
 			password VARCHAR(255) NOT NULL,
-			email VARCHAR(255) NOT NULL,
+			email VARCHAR(191) NOT NULL,
 			is_admin BOOLEAN NOT NULL DEFAULT FALSE,
 			is_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
 			confirmation_token VARCHAR(64) DEFAULT NULL,

@@ -1,277 +1,319 @@
-/* Property Cards */
-.property-card {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
+/* ====================================
+   PROPERTY CARDS
+   ==================================== */
+.property-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.roomCard {
+    position: relative;
     overflow: hidden;
     cursor: pointer;
     transition: var(--transition);
-    border: 1px solid var(--sand-dark);
     display: flex;
     flex-direction: column;
+    background: transparent;
 }
 
-.property-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--gold);
+.roomCard:hover {
+    transform: translateY(-2px);
 }
 
-.property-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-bottom: 1px solid var(--sand-dark);
-}
-
-.card-body {
-    padding: 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.card-body h2 {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text-dark);
-    line-height: 1.3;
-}
-
-.card-price {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--terracotta);
-    margin-bottom: 8px;
-}
-
-.card-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-
-.card-features span {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: var(--cream);
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--sand-dark);
-}
-
-.card-desc {
-    font-size: 0.82rem;
-    color: var(--text-light);
-    line-height: 1.4;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+.img-wrapper {
+    position: relative;
     overflow: hidden;
 }
 
-/* Badges */
+.imgRoom {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.roomCard:hover .imgRoom {
+    transform: scale(1.03);
+}
+
 .badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
     display: inline-block;
-    padding: 4px 14px;
-    border-radius: 50px;
+    padding: 5px 14px;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: var(--ocean-light);
+    background: var(--gold);
     color: #fff;
-    align-self: flex-start;
-    margin-top: 10px;
+    z-index: 2;
 }
 
 .badge.sold {
-    background: var(--text-light);
+    background: var(--grey);
     color: #fff;
 }
 
-.badge-admin { background: var(--ocean); color: #fff; }
-.badge-user { background: var(--sand); color: var(--text-muted); }
-.badge-confirmed { background: var(--ocean-light); color: #fff; }
-.badge-unconfirmed { background: var(--gold); color: #fff; }
+.badge-admin {
+    background: var(--azure);
+    color: #fff;
+}
 
-/* Detail Section */
+.badge-user {
+    background: var(--grey);
+    color: #fff;
+}
+
+.badge-confirmed {
+    background: var(--turquoise);
+    color: #fff;
+}
+
+.badge-unconfirmed {
+    background: var(--gold);
+    color: #fff;
+}
+
+.property-info {
+    padding: 15px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.roomLabel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transform: translateY(100%);
+    transition: var(--transition);
+}
+
+.roomCard:hover .roomLabel {
+    transform: translateY(0);
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--lagoon);
+    margin: 4px 0;
+}
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    color: var(--grey);
+}
+
+.features span {
+    font-size: 0.8rem;
+    color: var(--grey);
+}
+
+.placeholder-img {
+    background: var(--grey-light);
+    height: 250px;
+}
+
+.price-per-sqm {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--grey);
+}
+
+/* ====================================
+   DETAIL SECTION
+   ==================================== */
 .detail-section {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
     width: 100%;
 }
 
 .detail-section h1 {
     margin-bottom: 8px;
+    font-size: 2rem;
+    color: var(--black);
 }
 
 .detail-gallery {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     overflow-x: auto;
-    margin-bottom: 20px;
-    border-radius: var(--radius-lg);
+    margin-bottom: 24px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
 
 .detail-gallery img {
-    height: 280px;
-    border-radius: var(--radius-md);
+    height: 320px;
     object-fit: cover;
     flex-shrink: 0;
+    scroll-snap-align: start;
 }
 
 .detail-price {
     font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--terracotta);
-    margin-bottom: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 16px;
 }
 
 .detail-features {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .detail-features span {
     font-size: 0.85rem;
-    color: var(--text-muted);
-    background: var(--cream);
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--sand-dark);
-}
-
-.detail-desc {
-    font-size: 0.95rem;
-    color: var(--text-dark);
-    line-height: 1.6;
-    margin-bottom: 20px;
+    color: var(--grey);
+    background: var(--aliceblue);
+    padding: 6px 16px;
+    border: 1px solid var(--grey);
 }
 
 .login-prompt {
     font-size: 0.9rem;
-    color: var(--text-muted);
-    padding: 16px;
-    background: var(--cream);
-    border-radius: var(--radius-md);
+    color: var(--grey);
+    padding: 20px;
+    background: var(--aliceblue);
+    border: 1px solid var(--grey);
     text-align: center;
-    border: 1px solid var(--sand-dark);
+    margin-bottom: 20px;
+}
+
+.login-prompt a {
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.login-prompt a:hover {
+    color: var(--black);
 }
 
 .property-map {
     overflow: hidden;
-    border-radius: var(--radius-lg) !important;
-    border: 1px solid var(--sand-dark) !important;
 }
 
-.price-per-sqm {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: var(--text-light);
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--grey);
+    font-weight: 500;
+    margin-bottom: 20px;
 }
 
-.price-per-sqm-badge {
-    background: var(--ocean-light);
-    color: #fff;
-    font-size: 0.75rem;
+.back-link:hover {
+    color: var(--gold);
 }
 
-/* Auction Section */
+/* ====================================
+   AUCTION CARDS
+   ==================================== */
 .auction-section {
-    background: linear-gradient(135deg, var(--cream), var(--bg-warm));
-    border: 1px solid var(--gold);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
+    background: var(--white);
+    padding: 30px 40px;
     margin: 20px 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
 .auction-section h2 {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    color: var(--ocean);
-    margin-bottom: 8px;
+    font-size: 1.3rem;
+    color: var(--black);
+    margin-bottom: 12px;
 }
 
 .auction-section p {
     font-size: 0.9rem;
-    color: var(--text-muted);
+    color: var(--grey);
     margin-bottom: 4px;
 }
 
-/* Auction Cards */
 .auction-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-    padding: 0 20px;
-    max-width: 1280px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
 
 .auction-card {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    border: 1px solid var(--sand-dark);
+    background: var(--white);
+    padding: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     transition: var(--transition);
 }
 
 .auction-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
 
 .auction-card h3 {
-    font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 8px;
+    color: var(--black);
 }
 
 .auction-price {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--terracotta);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gold);
     margin-bottom: 6px;
 }
 
 .auction-meta {
     font-size: 0.8rem;
-    color: var(--text-light);
+    color: var(--grey);
     margin-bottom: 4px;
 }
 
 .auction-timer {
-    font-size: 0.85rem;
-    color: var(--ocean-light);
-    font-weight: 600;
-    margin: 10px 0;
+    font-size: 0.9rem;
+    color: var(--gold);
+    font-weight: 500;
+    margin: 12px 0;
 }
 
 .auction-cta {
     display: inline-block;
-    padding: 8px 20px;
-    background: var(--terracotta);
+    padding: 10px 24px;
+    background: var(--gold);
     color: #fff;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 500;
     transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
 }
 
 .auction-cta:hover {
-    background: var(--terracotta-dark);
-    transform: translateY(-1px);
+    opacity: 0.8;
+    transform: translateY(-2px);
 }
 
-/* Bid Form */
+/* ====================================
+   BID FORM
+   ==================================== */
 .bid-form {
     max-width: 500px;
 }
@@ -279,10 +321,8 @@
 .bid-form label {
     display: block;
     font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-weight: 500;
+    color: var(--grey);
     margin-bottom: 6px;
 }
 
@@ -290,14 +330,14 @@
 .bid-form select,
 .bid-form textarea {
     width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--sand-dark);
-    border-radius: var(--radius-sm);
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid var(--grey);
     font-size: 0.9rem;
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--text-dark);
-    margin-bottom: 14px;
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: var(--black);
+    margin-bottom: 16px;
     transition: var(--transition);
 }
 
@@ -305,40 +345,40 @@
 .bid-form select:focus,
 .bid-form textarea:focus {
     outline: none;
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px rgba(224,122,95,0.1);
+    border-bottom-color: var(--gold);
 }
 
 .bid-form button {
     padding: 12px 28px;
-    background: var(--terracotta);
+    background: var(--gold);
     color: #fff;
     border: none;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
-    font-family: var(--font-body);
+    font-family: Arial, sans-serif;
 }
 
 .bid-form button:hover {
-    background: var(--terracotta-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-glow);
+    opacity: 0.8;
+    transform: translateY(-2px);
 }
 
-/* Bids List */
+/* ====================================
+   BIDS LIST
+   ==================================== */
 .bids-list {
     list-style: none;
     margin: 12px 0;
+    padding: 0;
 }
 
 .bids-list li {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--sand-dark);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--grey);
     font-size: 0.9rem;
-    color: var(--text-dark);
+    color: var(--black);
 }
 
 .bids-list li:last-child {
@@ -346,66 +386,66 @@
 }
 
 .bids-list small {
-    color: var(--text-light);
+    color: var(--grey);
 }
 
-.sold {
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-/* Stats Grid (used across multiple pages) */
+/* ====================================
+   STATS GRID
+   ==================================== */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
     margin-bottom: 32px;
 }
 
 .stat-card {
-    background: var(--bg-card);
-    padding: 20px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--sand-dark);
+    background: var(--white);
+    padding: 24px 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     text-align: center;
     transition: var(--transition);
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
 }
 
 .stat-icon {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-bottom: 8px;
+    display: block;
 }
 
 .stat-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--grey);
     margin-bottom: 4px;
 }
 
 .stat-value {
     font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--terracotta);
+    font-weight: 600;
+    color: var(--gold);
 }
 
-.trend-up { color: var(--ocean-light) !important; }
-.trend-down { color: #DC2626 !important; }
+.trend-up {
+    color: var(--turquoise) !important;
+}
 
-/* Predict Section */
+.trend-down {
+    color: #DC2626 !important;
+}
+
+/* ====================================
+   PREDICT SECTION
+   ==================================== */
 .predict-section {
-    background: var(--bg-card);
-    border-radius: var(--radius-xl);
-    padding: 32px;
+    background: var(--white);
+    padding: 36px;
     margin-bottom: 32px;
-    border: 1px solid var(--sand-dark);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
 .predict-section h2 {
@@ -413,7 +453,7 @@
 }
 
 .predict-subtitle {
-    color: var(--text-light);
+    color: var(--grey);
     font-size: 0.85rem;
     margin-bottom: 24px;
 }
@@ -421,37 +461,34 @@
 .predict-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 16px;
 }
 
 .predict-grid label {
     display: block;
     font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-weight: 500;
+    color: var(--grey);
     margin-bottom: 4px;
 }
 
 .predict-grid select,
 .predict-grid input {
     width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--sand-dark);
-    border-radius: var(--radius-sm);
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid var(--grey);
     font-size: 0.9rem;
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--text-dark);
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: var(--black);
     transition: var(--transition);
 }
 
 .predict-grid select:focus,
 .predict-grid input:focus {
     outline: none;
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px rgba(224,122,95,0.1);
+    border-bottom-color: var(--gold);
 }
 
 .predict-btn-wrap {
@@ -465,35 +502,33 @@
 
 .predict-hint {
     font-size: 0.75rem;
-    color: var(--text-light);
+    color: var(--grey);
     margin-top: 12px;
 }
 
 .predict-result {
-    margin-top: 24px;
-    background: var(--bg-warm);
-    border: 1px solid var(--sand-dark);
-    border-radius: var(--radius-lg);
-    padding: 28px;
+    margin-top: 28px;
+    background: var(--aliceblue);
+    padding: 32px;
     text-align: center;
-    animation: fade 0.5s ease;
+    animation: fadeInUp 0.5s ease;
 }
 
 .predict-result h3 {
-    font-family: var(--font-display);
     margin-bottom: 8px;
+    color: var(--black);
 }
 
 .predict-meta {
-    color: var(--text-light);
+    color: var(--grey);
     font-size: 0.85rem;
     margin-bottom: 8px;
 }
 
 .predict-price {
     font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--terracotta);
+    font-weight: 700;
+    color: var(--gold);
     line-height: 1.2;
     margin: 12px 0;
 }
@@ -501,11 +536,11 @@
 .price-label {
     font-size: 0.85rem;
     font-weight: 400;
-    color: var(--text-light);
+    color: var(--grey);
 }
 
 .predict-range {
-    color: var(--text-muted);
+    color: var(--grey);
     font-size: 0.85rem;
     margin-bottom: 8px;
 }
@@ -513,47 +548,45 @@
 .predict-details {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 28px;
     font-size: 0.82rem;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+    color: var(--grey);
+    margin-bottom: 16px;
 }
 
 .predict-confidence {
     font-size: 0.82rem;
-    color: var(--text-muted);
+    color: var(--grey);
     max-width: 300px;
     margin: 0 auto;
 }
 
 .confidence-bar {
     height: 6px;
-    background: var(--sand-dark);
-    border-radius: 3px;
+    background: var(--grey-light);
     margin-bottom: 6px;
     overflow: hidden;
 }
 
 .confidence-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--terracotta), var(--gold));
-    border-radius: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--azure));
     transition: width 0.6s ease;
 }
 
 .predict-map {
-    border: 1px solid var(--sand-dark);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     overflow: hidden;
-    border-radius: var(--radius-md) !important;
 }
 
-/* Tables */
+/* ====================================
+   TABLES
+   ==================================== */
 .table-wrap {
     overflow-x: auto;
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--sand-dark);
+    background: var(--white);
     margin-bottom: 32px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
 .sales-table, .admin-table {
@@ -563,98 +596,103 @@
 }
 
 .sales-table th, .admin-table th {
-    padding: 12px 14px;
+    padding: 14px 16px;
     text-align: left;
-    background: var(--sand);
-    color: var(--text-dark);
+    background: var(--aliceblue);
+    color: var(--black);
     font-weight: 600;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--grey);
 }
 
 .sales-table td, .admin-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--sand-dark);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--grey);
+    color: var(--grey);
 }
 
 .sales-table tr:hover td, .admin-table tr:hover td {
-    background: var(--bg-warm);
+    background: var(--aliceblue);
 }
 
 .sales-table tr:last-child td, .admin-table tr:last-child td {
     border-bottom: none;
 }
 
-/* Admin */
+/* ====================================
+   ADMIN
+   ==================================== */
 .admin-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 32px;
+    padding: 32px 24px;
 }
 
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .admin-header h1 {
     margin: 0;
+    font-size: 2rem;
 }
 
 .admin-stats {
     display: flex;
     gap: 16px;
     margin-bottom: 32px;
+    flex-wrap: wrap;
 }
 
 .edit-form {
-    background: var(--bg-card);
-    padding: 28px;
-    border-radius: var(--radius-md);
+    background: var(--white);
+    padding: 32px;
     margin-bottom: 32px;
-    max-width: 500px;
-    border: 1px solid var(--sand-dark);
+    max-width: 560px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
 
 .edit-form h2 {
     margin-top: 0;
+    font-size: 1.3rem;
 }
 
 .edit-form label {
     display: block;
     margin-bottom: 6px;
     font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+    color: var(--grey);
 }
 
 .edit-form input {
     width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--sand-dark);
-    border-radius: var(--radius-sm);
-    margin-bottom: 16px;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid var(--grey);
+    margin-bottom: 20px;
     font-size: 0.9rem;
     box-sizing: border-box;
-    background: var(--bg-warm);
-    font-family: var(--font-body);
+    background: transparent;
+    font-family: Arial, sans-serif;
+    color: var(--black);
     transition: var(--transition);
 }
 
 .edit-form input:focus {
     outline: none;
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px rgba(224,122,95,0.1);
+    border-bottom-color: var(--gold);
 }
 
 .edit-form .form-actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    margin-top: 8px;
 }
 
 .actions {
@@ -663,19 +701,19 @@
 }
 
 .btn-sm {
-    padding: 5px 12px;
+    padding: 5px 14px;
     border: none;
-    border-radius: var(--radius-sm);
     font-size: 0.75rem;
     cursor: pointer;
     font-weight: 500;
     text-decoration: none;
     transition: var(--transition);
-    font-family: var(--font-body);
+    font-family: Arial, sans-serif;
 }
 
 .btn-sm:hover {
     opacity: 0.85;
+    transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -688,19 +726,219 @@
     color: #fff;
 }
 
+[data-theme="dark"] .roomCard {
+    background: transparent;
+}
+
+[data-theme="dark"] .auction-section,
+[data-theme="dark"] .auction-card,
+[data-theme="dark"] .predict-section,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .table-wrap,
+[data-theme="dark"] .edit-form {
+    background: rgb(25,25,25);
+}
+
+[data-theme="dark"] .bid-form input,
+[data-theme="dark"] .bid-form select,
+[data-theme="dark"] .bid-form textarea,
+[data-theme="dark"] .predict-grid select,
+[data-theme="dark"] .predict-grid input,
+[data-theme="dark"] .edit-form input {
+    background: transparent;
+    color: var(--black);
+}
+
+[data-theme="dark"] .detail-features span {
+    background: rgb(25,25,25);
+}
+
+[data-theme="dark"] .login-prompt {
+    background: rgb(25,25,25);
+}
+
+[data-theme="dark"] .predict-result {
+    background: rgb(20,20,25);
+}
+
+[data-theme="dark"] .sales-table th,
+[data-theme="dark"] .admin-table th {
+    background: rgb(25,25,25);
+}
+
+[data-theme="dark"] .stat-value {
+    color: var(--gold);
+}
+
+[data-theme="dark"] .detail-price {
+    color: var(--gold);
+}
+
+[data-theme="dark"] .auction-price {
+    color: var(--gold);
+}
+
+[data-theme="dark"] .auction-timer {
+    color: var(--gold);
+}
+
+[data-theme="dark"] .price {
+    color: var(--lagoon);
+}
+
+[data-theme="light"] .auction-section,
+[data-theme="light"] .auction-card,
+[data-theme="light"] .predict-section,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .table-wrap,
+[data-theme="light"] .edit-form {
+    background: var(--white);
+}
+
+[data-theme="light"] .detail-features span {
+    background: var(--grey-light);
+}
+
+[data-theme="light"] .login-prompt {
+    background: var(--grey-light);
+}
+
+[data-theme="light"] .predict-result {
+    background: var(--aliceblue);
+}
+
+[data-theme="light"] .sales-table th,
+[data-theme="light"] .admin-table th {
+    background: var(--grey-light);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .roomCard {
+        background: transparent;
+    }
+
+    :root:not([data-theme="light"]) .auction-section,
+    :root:not([data-theme="light"]) .auction-card,
+    :root:not([data-theme="light"]) .predict-section,
+    :root:not([data-theme="light"]) .stat-card,
+    :root:not([data-theme="light"]) .table-wrap,
+    :root:not([data-theme="light"]) .edit-form {
+        background: rgb(25,25,25);
+    }
+
+    :root:not([data-theme="light"]) .bid-form input,
+    :root:not([data-theme="light"]) .bid-form select,
+    :root:not([data-theme="light"]) .bid-form textarea,
+    :root:not([data-theme="light"]) .predict-grid select,
+    :root:not([data-theme="light"]) .predict-grid input,
+    :root:not([data-theme="light"]) .edit-form input {
+        background: transparent;
+        color: var(--black);
+    }
+
+    :root:not([data-theme="light"]) .detail-features span {
+        background: rgb(25,25,25);
+    }
+
+    :root:not([data-theme="light"]) .login-prompt {
+        background: rgb(25,25,25);
+    }
+
+    :root:not([data-theme="light"]) .predict-result {
+        background: rgb(20,20,25);
+    }
+
+    :root:not([data-theme="light"]) .sales-table th,
+    :root:not([data-theme="light"]) .admin-table th {
+        background: rgb(25,25,25);
+    }
+
+    :root:not([data-theme="light"]) .stat-value {
+        color: var(--gold);
+    }
+
+    :root:not([data-theme="light"]) .detail-price {
+        color: var(--gold);
+    }
+
+    :root:not([data-theme="light"]) .auction-price {
+        color: var(--gold);
+    }
+
+    :root:not([data-theme="light"]) .auction-timer {
+        color: var(--gold);
+    }
+
+    :root:not([data-theme="light"]) .price {
+        color: var(--lagoon);
+    }
+}
+
 @media (max-width: 768px) {
-    .predict-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .auction-grid { grid-template-columns: 1fr; }
-    .detail-gallery img { height: 200px; }
-    .admin-container { padding: 16px; }
-    .admin-stats { flex-direction: column; }
-    .predict-result { padding: 20px; }
-    .predict-price { font-size: 2rem; }
+    .property-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .predict-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .auction-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-gallery img {
+        height: 220px;
+    }
+
+    .admin-container {
+        padding: 20px 16px;
+    }
+
+    .admin-stats {
+        flex-direction: column;
+    }
+
+    .predict-result {
+        padding: 24px;
+    }
+
+    .predict-price {
+        font-size: 2rem;
+    }
+
+    .detail-section h1 {
+        font-size: 1.6rem;
+    }
+
+    .detail-price {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 480px) {
-    .predict-section { padding: 20px; }
-    .auction-card { padding: 16px; }
-    .detail-price { font-size: 1.4rem; }
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .predict-section {
+        padding: 20px;
+    }
+
+    .auction-card {
+        padding: 18px;
+    }
+
+    .detail-price {
+        font-size: 1.3rem;
+    }
+
+    .property-info {
+        padding: 14px 0;
+    }
 }

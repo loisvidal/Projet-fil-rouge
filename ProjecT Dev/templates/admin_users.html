@@ -6,36 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Administration - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <script src="/assets/js/theme.js"></script>
     <style>
         .admin-container { max-width: 1200px; margin: 0 auto; padding: 32px; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .admin-header h1 { margin: 0; font-size: 28px; }
+        .admin-header h1 { margin: 0; font-size: 28px; font-weight: 600; color: var(--black); }
         .admin-stats { display: flex; gap: 16px; margin-bottom: 32px; }
-        .admin-stats .stat-card { background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); flex: 1; border: 1px solid var(--sand-dark); text-align: center; }
-        .admin-stats .stat-card h3 { font-family: Inter, sans-serif; margin: 0 0 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .admin-table-wrap { overflow-x: auto; background: var(--bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--sand-dark); }
+        .admin-stats .stat-card { background: white; padding: 24px; flex: 1; box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center; }
+        .admin-stats .stat-card h3 { margin: 0 0 8px; font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .admin-table-wrap { overflow-x: auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
         .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .admin-table th { padding: 12px 16px; text-align: left; background: var(--sand); color: var(--text-dark); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .admin-table td { padding: 12px 16px; border-bottom: 1px solid var(--sand-dark); }
-        .admin-table tr:hover td { background: #faf8f5; }
+        .admin-table th { padding: 14px 16px; text-align: left; background: var(--grey-light); color: var(--black); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-table td { padding: 14px 16px; border-bottom: 1px solid var(--grey); }
+        .admin-table tr:hover td { background: var(--grey-light); }
         .admin-table tr:last-child td { border-bottom: none; }
-        .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-admin { background: var(--ocean); color: #fff; }
-        .badge-user { background: var(--sand); color: var(--text-muted); }
-        .badge-confirmed { background: var(--olive); color: #fff; }
-        .badge-unconfirmed { background: var(--gold); color: #fff; }
-        .actions { display: flex; gap: 6px; }
-        .btn-sm { padding: 5px 12px; border: none; border-radius: var(--radius-sm); font-size: 12px; cursor: pointer; font-weight: 500; text-decoration: none; transition: var(--transition); }
+        .badge { display: inline-block; padding: 4px 14px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+        .badge-admin { background: var(--gold); color: #fff; }
+        .badge-user { background: var(--grey-light); color: var(--grey); }
+        .badge-confirmed { background: var(--gold); color: #fff; }
+        .badge-unconfirmed { background: var(--grey); color: #fff; }
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-sm { padding: 6px 14px; border: none; font-size: 12px; cursor: pointer; font-weight: 500; text-decoration: none; transition: opacity 0.2s; display: inline-block; font-family: 'Roboto', sans-serif; }
         .btn-sm:hover { opacity: 0.85; }
         .btn-danger { background: #DC2626; color: #fff; }
         .btn-warning { background: var(--gold); color: #fff; }
-        .edit-form { background: var(--bg-card); padding: 28px; border-radius: var(--radius-md); margin-bottom: 32px; max-width: 500px; border: 1px solid var(--sand-dark); }
-        .edit-form h2 { margin-top: 0; }
-        .edit-form label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .edit-form input { width: 100%; padding: 10px 14px; border: 1px solid var(--sand-dark); border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 14px; box-sizing: border-box; background: var(--bg-warm); }
-        .edit-form input:focus { outline: none; border-color: var(--terracotta); box-shadow: 0 0 0 3px rgba(212,118,74,0.1); }
-        .edit-form .form-actions { display: flex; gap: 8px; }
+        .edit-form { background: white; padding: 32px; margin-bottom: 32px; max-width: 500px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .edit-form h2 { margin: 0 0 20px; font-size: 22px; color: var(--black); }
+        .edit-form label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; }
+        .edit-form input { width: 100%; padding: 10px 14px; border: 1px solid var(--grey); margin-bottom: 16px; font-size: 14px; box-sizing: border-box; background: var(--grey-light); font-family: 'Roboto', sans-serif; }
+        .edit-form input:focus { outline: none; border-color: var(--gold); }
+        .edit-form .form-actions { display: flex; gap: 8px; margin-top: 8px; }
         .admin-container .btn-primary { text-decoration: none; }
         @media (max-width: 768px) { .admin-container { padding: 16px; } .admin-stats { flex-direction: column; } }
     </style>
@@ -46,7 +46,7 @@
     <div class="admin-container">
         <div class="admin-header">
             <h1>Administration</h1>
-            <a href="/red_project/home" class="btn-primary">← Accueil</a>
+            <a href="/red_project/home" class="btn btn-primary" style="text-decoration:none;">← Accueil</a>
         </div>
 
         {{if .EditUser}}
@@ -61,8 +61,8 @@
                 <label for="password">Mot de passe</label>
                 <input type="text" name="password" id="password" value="{{.EditUser.Password}}" required>
                 <div class="form-actions">
-                    <button type="submit" class="btn-sm" style="background:var(--terracotta);color:#fff;padding:10px 20px;">Enregistrer</button>
-                    <a href="/red_project/admin/users" class="btn-sm btn-warning" style="padding:10px 20px;display:inline-block;">Annuler</a>
+                    <button type="submit" class="btn-sm" style="background:var(--gold);color:#fff;padding:10px 20px;font-size:13px;">Enregistrer</button>
+                    <a href="/red_project/admin/users" class="btn-sm btn-warning" style="padding:10px 20px;display:inline-block;font-size:13px;">Annuler</a>
                 </div>
             </form>
         </div>
@@ -71,7 +71,7 @@
         <div class="admin-stats">
             <div class="stat-card">
                 <h3>Total utilisateurs</h3>
-                <div class="stat-value" style="font-size:28px;font-weight:700;color:var(--terracotta);">{{.TotalUsers}}</div>
+                <div class="stat-value" style="font-size:28px;font-weight:700;color:var(--gold);">{{.TotalUsers}}</div>
             </div>
         </div>
 
@@ -90,9 +90,9 @@
             <tbody>
                 {{range .Users}}
                 <tr>
-                    <td>{{.IdUser}}</td>
-                    <td><strong>{{.NameUser}}</strong></td>
-                    <td style="color:var(--text-muted)">{{.Mail}}</td>
+                    <td style="color:var(--grey);font-weight:500;">{{.IdUser}}</td>
+                    <td><strong style="color:var(--black);">{{.NameUser}}</strong></td>
+                    <td style="color:var(--grey)">{{.Mail}}</td>
                     <td>
                         {{if .IsAdmin}}
                             <span class="badge badge-admin">Admin</span>
@@ -109,7 +109,7 @@
                     </td>
                     <td>
                         <div class="actions">
-                            <a href="/red_project/admin/users/edit?id={{.IdUser}}" class="btn-sm" style="background:var(--terracotta);color:#fff;">Modifier</a>
+                            <a href="/red_project/admin/users/edit?id={{.IdUser}}" class="btn-sm" style="background:var(--gold);color:#fff;">Modifier</a>
                             <form action="/red_project/admin/users/toggle-admin" method="POST" style="display:inline;">
                                 <input type="hidden" name="id" value="{{.IdUser}}">
                                 <button type="submit" class="btn-sm btn-warning">

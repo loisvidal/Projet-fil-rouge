@@ -11,7 +11,13 @@ import (
 var ProfilConnect models.User
 
 func ProfilHandler(w http.ResponseWriter, r *http.Request) {
-	u, err := database.GetUserByIDWithRelations(StructHome.Profil.IdUser)
+	var u models.User
+	var err error
+	if isHardcodedUser(StructHome.Profil.IdUser) {
+		u, err = hardcodedGetUserByID(StructHome.Profil.IdUser)
+	} else {
+		u, err = database.GetUserByIDWithRelations(StructHome.Profil.IdUser)
+	}
 	if err != nil {
 		http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 		return
@@ -39,7 +45,12 @@ func ViewOtherProfil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := database.GetUserByID(id)
+	var u models.User
+	if isHardcodedUser(id) {
+		u, err = hardcodedGetUserByID(id)
+	} else {
+		u, err = database.GetUserByID(id)
+	}
 	if err != nil {
 		http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 		return
@@ -86,16 +97,16 @@ func AdminUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := database.GetAllUsers()
-	if err != nil {
-		http.Error(w, "Erreur chargement utilisateurs", http.StatusInternalServerError)
-		return
+	users, _ := database.GetAllUsers()
+	allUsers := append(hardcodedUsers, users...)
+	if allUsers == nil {
+		allUsers = []models.User{}
 	}
 
 	data := AdminPageData{
 		Profil:     StructHome.Profil,
-		Users:      users,
-		TotalUsers: len(users),
+		Users:      allUsers,
+		TotalUsers: len(allUsers),
 	}
 
 	temp.ExecuteTemplate(w, "admin_users", data)
@@ -119,6 +130,11 @@ func AdminDeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if isHardcodedUser(id) {
+		http.Error(w, "Impossible de supprimer un compte système", http.StatusForbidden)
+		return
+	}
+
 	database.DeleteUser(id)
 	http.Redirect(w, r, "/red_project/admin/users", http.StatusSeeOther)
 }
@@ -133,6 +149,11 @@ func AdminToggleAdmin(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "ID invalide", http.StatusBadRequest)
+		return
+	}
+
+	if isHardcodedUser(id) {
+		http.Error(w, "Impossible de modifier un compte système", http.StatusForbidden)
 		return
 	}
 
@@ -151,6 +172,11 @@ func AdminEditUser(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			http.Error(w, "ID invalide", http.StatusBadRequest)
+			return
+		}
+
+		if isHardcodedUser(id) {
+			http.Error(w, "Impossible de modifier un compte système", http.StatusForbidden)
 			return
 		}
 
@@ -180,18 +206,27 @@ func AdminEditUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := database.GetUserByID(id)
+	var u models.User
+	if isHardcodedUser(id) {
+		u, err = hardcodedGetUserByID(id)
+	} else {
+		u, err = database.GetUserByID(id)
+	}
 	if err != nil {
 		http.Error(w, "Utilisateur introuvable", http.StatusNotFound)
 		return
 	}
 
-	users, _ := database.GetAllUsers()
+	dbUsers, _ := database.GetAllUsers()
+	allUsers := append(hardcodedUsers, dbUsers...)
+	if allUsers == nil {
+		allUsers = []models.User{}
+	}
 
 	data := AdminPageData{
 		Profil:     StructHome.Profil,
-		Users:      users,
-		TotalUsers: len(users),
+		Users:      allUsers,
+		TotalUsers: len(allUsers),
 		EditUser:   &u,
 	}
 	temp.ExecuteTemplate(w, "admin_users", data)

@@ -1,0 +1,91 @@
+{{define "contact"}}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact - YPlaza</title>
+    <link rel="stylesheet" href="/assets/css/home.main.css">
+    <script src="/assets/js/theme.js"></script>
+    <style>
+        .contact-page { padding: 60px 24px 80px; max-width: 640px; margin: 0 auto; min-height: 60vh; }
+        .contact-page h1 { color: var(--gold); margin-bottom: 8px; }
+        .contact-page .subtitle { color: var(--grey); margin-bottom: 40px; font-size: 0.95rem; }
+        .contact-form { display: flex; flex-direction: column; gap: 20px; }
+        .contact-form label { font-size: 0.8rem; font-weight: 600; color: var(--black); }
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+            width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid var(--grey);
+            font-family: Arial, sans-serif; font-size: 0.95rem; color: var(--black);
+            background: transparent; transition: var(--transition); box-sizing: border-box;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus,
+        .contact-form select:focus {
+            outline: none; border-bottom-color: var(--gold);
+        }
+        .contact-form textarea { min-height: 120px; resize: vertical; }
+        .contact-form button {
+            padding: 14px 30px; background: var(--gold); color: #fff; border: none;
+            font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: var(--transition);
+            font-family: Arial, sans-serif; align-self: flex-start;
+        }
+        .contact-form button:hover { opacity: 0.8; transform: translateY(-2px); }
+        .contact-info { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--grey-light); }
+        .contact-info p { color: var(--grey); font-size: 0.9rem; margin-bottom: 8px; }
+        .contact-info strong { color: var(--black); }
+        .contact-success { background: #ecfdf5; color: #065f46; padding: 16px; margin-bottom: 20px; border-left: 3px solid #10b981; }
+        .contact-error { background: #fef2f2; color: #b91c1c; padding: 16px; margin-bottom: 20px; border-left: 3px solid #b91c1c; }
+    </style>
+</head>
+<body>
+    {{template "header" .}}
+    <main class="contact-page">
+        <h1>Contactez-nous</h1>
+        <p class="subtitle">Une question, un projet ? Notre équipe vous répond sous 24h.</p>
+
+        {{if .Success}}
+            <div class="contact-success">Merci pour votre message ! Notre équipe vous recontactera très prochainement.</div>
+        {{end}}
+        {{if .Error}}
+            <div class="contact-error">{{.Error}}</div>
+        {{end}}
+
+        <form method="post" action="/red_project/contact" class="contact-form">
+            <div>
+                <label for="name">Nom complet</label>
+                <input type="text" id="name" name="name" required placeholder="Votre nom">
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="votre@email.com">
+            </div>
+            <div>
+                <label for="subject">Sujet</label>
+                <select id="subject" name="subject">
+                    <option value="info">Demande d'information</option>
+                    <option value="visit">Visite de bien</option>
+                    <option value="auction">Question sur une enchère</option>
+                    <option value="estimate">Estimation de bien</option>
+                    <option value="other">Autre</option>
+                </select>
+            </div>
+            <div>
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required placeholder="Votre message..."></textarea>
+            </div>
+            <button type="submit">Envoyer le message</button>
+        </form>
+
+        <div class="contact-info">
+            <p><strong>Email :</strong> contact@yplaza.fr</p>
+            <p><strong>Téléphone :</strong> +33 1 23 45 67 89</p>
+            <p><strong>Adresse :</strong> 24 rue de la Paix, 75002 Paris</p>
+            <p><strong>Horaires :</strong> Lun-Ven 9h-19h, Sam 10h-17h</p>
+        </div>
+    </main>
+    {{template "footer"}}
+</body>
+</html>
+{{end}}

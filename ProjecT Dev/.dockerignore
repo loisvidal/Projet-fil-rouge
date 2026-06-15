@@ -1,0 +1,6 @@
+*.exe
+*.log
+Data/
+.git
+.gitignore
+README.md

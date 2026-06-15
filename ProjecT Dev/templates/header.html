@@ -11,6 +11,10 @@
     </nav>
 
     <div class="connectHeader">
+        <button class="theme-toggle" onclick="window.__toggleTheme()" aria-label="Changer le thème">
+            <span class="theme-icon-light">☀️</span>
+            <span class="theme-icon-dark">🌙</span>
+        </button>
         {{if .Profil.IsConnect}}
             {{if .Profil.IsConfirmed}}
                 <span class="user-welcome">Bienvenue, {{.Profil.NameUser}}</span>

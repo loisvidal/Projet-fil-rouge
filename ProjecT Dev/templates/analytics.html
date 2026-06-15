@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Analyses & Prévisions - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
@@ -17,50 +17,43 @@
     <main>
         <section class="detail-section">
             <a href="/red_project/home" class="back-link">← Retour</a>
-            <h1>Analyses et prévisions</h1>
+            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 32px;">Analyses et prévisions</h1>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">📊</div>
                     <div class="stat-label">Ventes totales</div>
                     <div class="stat-value">{{.Summary.TotalSales}}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">💰</div>
                     <div class="stat-label">Prix moyen</div>
                     <div class="stat-value">{{printf "%.0f" .Summary.AveragePrice}} €</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📐</div>
                     <div class="stat-label">Prix/m² moyen</div>
                     <div class="stat-value">{{printf "%.0f" .Summary.AveragePricePerSqm}} €</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📈</div>
                     <div class="stat-label">Revenu total</div>
                     <div class="stat-value">{{printf "%.0f" .Summary.TotalRevenue}} €</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📉</div>
                     <div class="stat-label">Tendance</div>
                     <div class="stat-value {{if eq .Summary.PriceTrend "hausse"}}trend-up{{else}}trend-down{{end}}">
                         {{.Summary.PriceTrend}}
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">📍</div>
                     <div class="stat-label">Région active</div>
                     <div class="stat-value">{{.Summary.MostActiveRegion}}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🏠</div>
                     <div class="stat-label">Type populaire</div>
                     <div class="stat-value">{{.Summary.TopPropertyType}}</div>
                 </div>
             </div>
 
             <div class="predict-section">
-                <h2>Prédiction de prix</h2>
+                <h2 style="font-size:24px;color:var(--black);margin:0 0 8px;">Prédiction de prix</h2>
                 <p class="predict-subtitle">Estimation intelligente basée sur les ventes réelles, la localisation vérifiée et le prix au m²</p>
 
                 <form method="post" action="/red_project/analytics/predict" class="predict-form" id="predictForm">
@@ -90,7 +83,7 @@
                             <input type="text" name="postal_code" id="postal_code" placeholder="ex: 13001, 06000, 75001...">
                         </div>
                         <div class="predict-btn-wrap">
-                            <button type="submit" class="btn-primary">Estimer le prix</button>
+                            <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;width:100%;">Estimer le prix</button>
                         </div>
                     </div>
                     <p class="predict-hint">💡 Remplissez la ville ou le code postal pour une estimation localisée précise</p>
@@ -98,7 +91,7 @@
 
                 <div class="predict-result" id="predictResult" {{if not .Prediction}}style="display:none"{{end}}>
                     {{if .Prediction}}
-                    <h3>Résultat de l'estimation</h3>
+                    <h3 style="font-size:20px;color:var(--black);margin:0 0 8px;">Résultat de l'estimation</h3>
                     <div class="predict-meta">
                         {{.Prediction.TypeLabel}} · {{.Prediction.Rooms}} pièces · {{.Prediction.Surface}} m²
                         {{if .Prediction.Location}} · {{.Prediction.Location}}{{end}}
@@ -116,12 +109,12 @@
                         </div>
                         Confiance : {{printf "%.0f" (mul .Prediction.Confidence 100)}}%
                     </div>
-                    <div id="predictMap" class="predict-map" style="height:200px;margin-top:16px;border-radius:12px;display:none;"></div>
+                    <div id="predictMap" class="predict-map" style="height:200px;margin-top:16px;display:none;"></div>
                     {{end}}
                 </div>
             </div>
 
-            <h2>Historique des ventes</h2>
+            <h2 style="font-size:24px;color:var(--black);margin:40px 0 16px;">Historique des ventes</h2>
             {{if .Sales}}
             <div class="table-wrap">
             <table class="sales-table">
@@ -149,6 +142,7 @@
         </section>
     </main>
 
+    <script src="/assets/js/connect.js" defer></script>
     <script>
         document.getElementById('predictForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -160,7 +154,7 @@
             const el = document.getElementById('predictResult');
             el.style.display = 'block';
             el.innerHTML = `
-                <h3>Résultat de l'estimation</h3>
+                <h3 style="font-size:20px;color:var(--black);margin:0 0 8px;">Résultat de l'estimation</h3>
                 <div class="predict-meta">${(r.TypeLabel || r.Type)} · ${r.Rooms} pièces · ${r.Surface} m²${r.Location ? ' · ' + r.Location : ''}${r.PostalCode ? ' (' + r.PostalCode + ')' : ''}</div>
                 <div class="predict-price"><span class="price-label">Prix estimé</span><br>${Math.round(r.PredictedPrice)} €</div>
                 <div class="predict-range">Fourchette : ${Math.round(r.MinRange)} € – ${Math.round(r.MaxRange)} €</div>
@@ -172,7 +166,7 @@
                     <div class="confidence-bar"><div class="confidence-fill" style="width:${Math.round(r.Confidence * 100)}%"></div></div>
                     Confiance : ${Math.round(r.Confidence * 100)}%
                 </div>
-                <div id="predictMap" style="height:200px;margin-top:16px;border-radius:12px;${r.Latitude ? '' : 'display:none;'}"></div>
+                <div id="predictMap" style="height:200px;margin-top:16px;${r.Latitude ? '' : 'display:none;'}"></div>
             `;
 
             if (r.Latitude && r.Longitude) {
@@ -227,34 +221,32 @@
 
     <style>
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 32px; }
-        .stat-card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center; }
-        .stat-icon { font-size: 24px; margin-bottom: 8px; }
-        .stat-label { font-size: 11px; color: #8b8b8b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .stat-value { font-size: 20px; font-weight: 700; color: var(--terracotta); }
-        .predict-section { background: #fff; border-radius: 20px; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
-        .predict-subtitle { color: #8b8b8b; margin-top: -8px; margin-bottom: 24px; }
+        .stat-card { background: white; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center; }
+        .stat-label { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--gold); }
+        .predict-section { background: white; padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+        .predict-subtitle { color: var(--grey); margin-top: -8px; margin-bottom: 24px; font-size: 14px; }
         .predict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .predict-btn-wrap { display: flex; align-items: flex-end; }
-        .predict-btn-wrap button { width: 100%; }
-        .predict-hint { font-size: 12px; color: #8b8b8b; margin-top: 12px; }
-        .predict-result { margin-top: 24px; background: #faf8f5; border: 1px solid #e8e0d5; border-radius: 16px; padding: 28px; text-align: center; }
-        .predict-meta { color: #8b8b8b; font-size: 14px; margin-bottom: 8px; }
-        .predict-price { font-size: 40px; font-weight: 800; color: var(--terracotta); line-height: 1.2; margin: 12px 0; }
-        .price-label { font-size: 14px; font-weight: 400; color: #8b8b8b; }
-        .predict-range { color: #666; font-size: 14px; margin-bottom: 8px; }
-        .predict-details { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: #666; margin-bottom: 12px; }
-        .predict-confidence { font-size: 13px; color: #666; max-width: 300px; margin: 0 auto; }
-        .confidence-bar { height: 6px; background: #e8e0d5; border-radius: 3px; margin-bottom: 6px; overflow: hidden; }
-        .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--terracotta), var(--gold)); border-radius: 3px; transition: width 0.6s ease; }
-        .predict-map { border: 1px solid #e8e0d5; overflow: hidden; }
+        .predict-hint { font-size: 12px; color: var(--grey); margin-top: 12px; }
+        .predict-result { margin-top: 24px; background: var(--grey-light); padding: 28px; text-align: center; }
+        .predict-meta { color: var(--grey); font-size: 14px; margin-bottom: 8px; }
+        .predict-price { font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1.2; margin: 12px 0; }
+        .price-label { font-size: 14px; font-weight: 400; color: var(--grey); }
+        .predict-range { color: var(--grey); font-size: 14px; margin-bottom: 8px; }
+        .predict-details { display: flex; justify-content: center; gap: 24px; font-size: 13px; color: var(--grey); margin-bottom: 12px; }
+        .predict-confidence { font-size: 13px; color: var(--grey); max-width: 300px; margin: 0 auto; }
+        .confidence-bar { height: 6px; background: var(--grey-light); margin-bottom: 6px; overflow: hidden; }
+        .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--grey)); transition: width 0.6s ease; }
+        .predict-map { overflow: hidden; }
         .sales-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .sales-table th { padding: 12px 14px; text-align: left; background: var(--sand); color: var(--text-dark); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sales-table td { padding: 10px 14px; border-bottom: 1px solid #f0ebe3; }
-        .sales-table tr:hover td { background: #faf8f5; }
-        .table-wrap { overflow-x: auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-        .trend-up { color: var(--olive) !important; }
+        .sales-table th { padding: 12px 14px; text-align: left; background: var(--grey-light); color: var(--black); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sales-table td { padding: 10px 14px; border-bottom: 1px solid var(--grey); }
+        .sales-table tr:hover td { background: var(--grey-light); }
+        .table-wrap { overflow-x: auto; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .trend-up { color: var(--gold) !important; }
         .trend-down { color: #DC2626 !important; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #8b8b8b; background: #fff; border-radius: 16px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--grey); background: white; }
         @media (max-width: 768px) { .predict-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </body>

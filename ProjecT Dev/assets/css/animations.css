@@ -1,0 +1,243 @@
+/* ==========================================
+   SHIMMER EFFECT ON GOLD ELEMENTS
+   ========================================== */
+@keyframes goldShimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.btn-primary,
+.badge,
+.isConnect_login,
+.dashboard-card.center-card,
+.footer-newsletter .inputEmail button,
+.connect form button[type="submit"],
+.auth-form button,
+.search-bar .btn,
+.admin-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after,
+.badge::after,
+.isConnect_login::after,
+.dashboard-card.center-card::after,
+.footer-newsletter .inputEmail button::after,
+.connect form button[type="submit"]::after,
+.auth-form button::after,
+.search-bar .btn::after,
+.admin-link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 70%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    animation: goldShimmer 4s ease-in-out infinite;
+    animation-delay: calc(var(--shimmer-delay, 0) * 1s);
+}
+
+.btn-primary::after { animation-delay: 0s; }
+.badge::after { animation-delay: 0.5s; }
+.isConnect_login::after { animation-delay: 1s; }
+.dashboard-card.center-card::after { animation-delay: 1.5s; }
+.footer-newsletter .inputEmail button::after { animation-delay: 2s; }
+.connect form button[type="submit"]::after { animation-delay: 2.5s; }
+.auth-form button::after { animation-delay: 3s; }
+.search-bar .btn::after { animation-delay: 3.5s; }
+
+.detail-price,
+.price,
+.auction-price {
+    position: relative;
+    display: inline-block;
+}
+
+@keyframes goldPulse {
+    0%, 100% {
+        text-shadow: 0 0 4px rgba(197, 160, 89, 0);
+    }
+    50% {
+        text-shadow: 0 0 12px rgba(197, 160, 89, 0.4);
+    }
+}
+
+.detail-price {
+    animation: goldPulse 3s ease-in-out infinite;
+}
+
+.price {
+    animation: goldPulse 3s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+.auction-price {
+    animation: goldPulse 3s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+/* ==========================================
+   FADE IN ON PAGE LOAD
+   ========================================== */
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body > header,
+body > main,
+body > footer {
+    animation: pageFadeIn 0.6s ease both;
+}
+
+body > header { animation-delay: 0.05s; }
+body > main { animation-delay: 0.1s; }
+body > footer { animation-delay: 0.15s; }
+
+/* ==========================================
+   HOVER GLOW ON CARDS
+   ========================================== */
+.roomCard,
+.category-card,
+.dashboard-card,
+.stat-item,
+.auction-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.roomCard:hover,
+.category-card:hover,
+.dashboard-card:hover,
+.stat-item:hover,
+.auction-card:hover {
+    box-shadow: 0 8px 30px rgba(197, 160, 89, 0.15);
+}
+
+/* ==========================================
+   SUBTLE FLOATING ANIMATION ON HERO
+   ========================================== */
+@keyframes gentleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.hero-content h1 {
+    animation: gentleFloat 5s ease-in-out infinite;
+}
+
+/* ==========================================
+   GOLD BORDER GLOW ON FOCUS
+   ========================================== */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
+    border-color: var(--gold) !important;
+}
+
+/* ==========================================
+   SCROLL REVEAL
+   ========================================== */
+@keyframes revealUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-card,
+.roomCard,
+.stat-item {
+    animation: revealUp 0.6s ease both;
+}
+
+.category-card:nth-child(1) { animation-delay: 0.05s; }
+.category-card:nth-child(2) { animation-delay: 0.1s; }
+.category-card:nth-child(3) { animation-delay: 0.15s; }
+.category-card:nth-child(4) { animation-delay: 0.2s; }
+.category-card:nth-child(5) { animation-delay: 0.25s; }
+.category-card:nth-child(6) { animation-delay: 0.3s; }
+.category-card:nth-child(7) { animation-delay: 0.35s; }
+.category-card:nth-child(8) { animation-delay: 0.4s; }
+.category-card:nth-child(9) { animation-delay: 0.45s; }
+
+.roomCard:nth-child(1) { animation-delay: 0.05s; }
+.roomCard:nth-child(2) { animation-delay: 0.1s; }
+.roomCard:nth-child(3) { animation-delay: 0.15s; }
+.roomCard:nth-child(4) { animation-delay: 0.2s; }
+.roomCard:nth-child(5) { animation-delay: 0.25s; }
+.roomCard:nth-child(6) { animation-delay: 0.3s; }
+
+/* ==========================================
+   DARK MODE — ADJUSTED SHIMMER
+   ========================================== */
+[data-theme="dark"] .btn-primary::after,
+[data-theme="dark"] .badge::after,
+[data-theme="dark"] .isConnect_login::after,
+[data-theme="dark"] .dashboard-card.center-card::after,
+[data-theme="dark"] .footer-newsletter .inputEmail button::after,
+[data-theme="dark"] .connect form button[type="submit"]::after,
+[data-theme="dark"] .auth-form button::after,
+[data-theme="dark"] .search-bar .btn::after,
+[data-theme="dark"] .admin-link::after {
+    background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 215, 0, 0.2) 50%,
+        transparent 70%
+    );
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .btn-primary::after,
+    :root:not([data-theme="light"]) .badge::after,
+    :root:not([data-theme="light"]) .isConnect_login::after,
+    :root:not([data-theme="light"]) .dashboard-card.center-card::after,
+    :root:not([data-theme="light"]) .footer-newsletter .inputEmail button::after,
+    :root:not([data-theme="light"]) .connect form button[type="submit"]::after,
+    :root:not([data-theme="light"]) .auth-form button::after,
+    :root:not([data-theme="light"]) .search-bar .btn::after,
+    :root:not([data-theme="light"]) .admin-link::after {
+        background: linear-gradient(
+            105deg,
+            transparent 30%,
+            rgba(255, 215, 0, 0.2) 50%,
+            transparent 70%
+        );
+    }
+}
+
+[data-theme="dark"] .detail-price,
+[data-theme="dark"] .price,
+[data-theme="dark"] .auction-price {
+    text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
+}

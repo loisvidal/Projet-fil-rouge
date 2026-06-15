@@ -1,29 +1,34 @@
 const modalContainer = document.querySelector(".modal-container");
 const modalTrigger = document.querySelectorAll(".modal-trigger");
 
-modalTrigger.forEach(trigger => trigger.addEventListener("click", toggleModal))
-
-function toggleModal() {
-    modalContainer.classList.toggle("active");
+if (modalTrigger.length > 0) {
+    modalTrigger.forEach(trigger => trigger.addEventListener("click", toggleModal));
 }
 
-//
+function toggleModal() {
+    if (modalContainer) {
+        modalContainer.classList.toggle("active");
+    }
+}
 
 const login = document.querySelector(".login");
 const register = document.querySelector(".register");
 const switchLogin = document.querySelector(".switch-login");
 const switchRegister = document.querySelector(".switch-register");
 
-switchLogin.addEventListener("click", toggleLogin);
-switchRegister.addEventListener("click", toggleRegister);
+if (switchLogin) {
+    switchLogin.addEventListener("click", toggleLogin);
+}
+if (switchRegister) {
+    switchRegister.addEventListener("click", toggleRegister);
+}
 
 function toggleLogin() {
-    register.classList.remove("active");
-    login.classList.add("active");
+    if (register) register.classList.remove("active");
+    if (login) login.classList.add("active");
 }
 
 function toggleRegister() {
-    login.classList.remove("active");
-    register.classList.add("active");
+    if (login) login.classList.remove("active");
+    if (register) register.classList.add("active");
 }
-

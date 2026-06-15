@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Enchères - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
     {{template "connect" .}}
 
     <main>
-        <section style="flex:1">
+        <section class="container">
             <div class="page-header">
-                <h1>Enchères en cours</h1>
+                <h1 style="font-size:32px;font-weight:600;color:var(--black);margin:0;">Enchères en cours</h1>
                 {{if .Profil.IsConnect}}
-                <a href="/red_project/auction/create" class="btn-primary">+ Créer une enchère</a>
+                <a href="/red_project/auction/create" class="btn btn-primary" style="text-decoration:none;">+ Créer une enchère</a>
                 {{end}}
             </div>
 
@@ -25,7 +25,7 @@
             <div class="auction-grid">
                 {{range .Auctions}}
                 <div class="auction-card">
-                    <h3>{{.PropertyName}}</h3>
+                    <h3 style="font-size:18px;color:var(--black);margin:0 0 12px;">{{.PropertyName}}</h3>
                     <div class="auction-price">{{.CurrentPrice}} €</div>
                     <div class="auction-meta">Prix de départ : {{.StartPrice}} € · Pas : {{.MinBidStep}} €</div>
                     <div class="auction-meta">{{.BidCount}} offre(s)</div>
@@ -38,9 +38,9 @@
             </div>
             {{else}}
             <div class="empty-state">
-                <p>Aucune enchère en cours pour le moment.</p>
+                <p style="font-size:16px;color:var(--grey);margin-bottom:20px;">Aucune enchère en cours pour le moment.</p>
                 {{if .Profil.IsConnect}}
-                <a href="/red_project/auction/create" class="btn-primary">Créer la première enchère</a>
+                <a href="/red_project/auction/create" class="btn btn-primary" style="text-decoration:none;">Créer la première enchère</a>
                 {{end}}
             </div>
             {{end}}

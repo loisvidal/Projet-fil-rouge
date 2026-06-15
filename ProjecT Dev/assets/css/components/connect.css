@@ -16,74 +16,69 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgba(38, 70, 83, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.7);
 }
 
 .modal {
     width: 95%;
     max-width: 440px;
     min-width: 300px;
-    background: var(--bg-card);
-    border-radius: var(--radius-xl);
+    background: var(--white);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    animation: modalIn 0.35s ease;
     overflow: hidden;
-    border: 1px solid var(--sand-dark);
-    animation: modalIn 0.3s ease;
 }
 
 @keyframes modalIn {
     from {
         opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
+        transform: translate(-50%, -44%);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate(-50%, -50%);
     }
 }
 
 .close-modal {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 14px;
+    right: 14px;
     width: 32px;
     height: 32px;
     border: none;
-    border-radius: 50%;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 400;
     cursor: pointer;
-    background: var(--cream);
-    color: var(--text-muted);
+    background: var(--grey-light);
+    color: var(--grey);
     transition: var(--transition);
     z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-body);
+    font-family: Arial, sans-serif;
+    line-height: 1;
 }
 
 .close-modal:hover {
-    background: #DC2626;
-    color: #fff;
-    transform: rotate(90deg);
+    background: var(--grey);
+    color: white;
 }
 
 .connect {
-    padding: 40px 32px 32px;
+    padding: 40px 36px 32px;
     overflow-x: hidden;
 }
 
 .login, .register {
     display: none;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 .login.active, .register.active {
@@ -92,39 +87,42 @@
 }
 
 @keyframes fade {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .connect h2 {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    color: var(--ocean);
+    font-size: 1.5rem;
+    color: var(--black);
     margin-bottom: 4px;
+}
+
+.connect p {
+    font-size: 0.85rem;
+    color: var(--grey);
+    margin-bottom: 8px;
 }
 
 .connect form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .connect label {
     font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-weight: 500;
+    color: var(--grey);
 }
 
 .input-connect {
-    padding: 11px 14px;
-    border: 1px solid var(--sand-dark);
-    border-radius: var(--radius-sm);
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid var(--grey);
     font-size: 0.9rem;
-    font-family: var(--font-body);
-    background: var(--cream);
-    color: var(--text-dark);
+    font-family: Arial, sans-serif;
+    background: transparent;
+    color: var(--black);
     transition: var(--transition);
     width: 100%;
     box-sizing: border-box;
@@ -132,55 +130,99 @@
 
 .input-connect:focus {
     outline: none;
-    border-color: var(--terracotta);
-    box-shadow: 0 0 0 3px rgba(224,122,95,0.1);
+    border-bottom-color: var(--gold);
 }
 
 .connect form button[type="submit"] {
-    padding: 12px;
-    background: var(--terracotta);
+    padding: 13px;
+    background: var(--gold);
     color: #fff;
     border: none;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
-    font-family: var(--font-body);
-    margin-top: 4px;
+    font-family: Arial, sans-serif;
+    margin-top: 6px;
 }
 
 .connect form button[type="submit"]:hover {
-    background: var(--terracotta-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-glow);
+    opacity: 0.8;
+    transform: translateY(-2px);
 }
 
 .switch-register, .switch-login {
     padding: 10px;
     background: transparent;
-    border: 1.5px solid var(--sand-dark);
-    border-radius: 50px;
+    border: 1px solid var(--grey);
     font-size: 0.8rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--grey);
     cursor: pointer;
     transition: var(--transition);
-    font-family: var(--font-body);
+    font-family: Arial, sans-serif;
     text-align: center;
 }
 
 .switch-register:hover, .switch-login:hover {
-    border-color: var(--terracotta);
-    color: var(--terracotta);
-    background: rgba(224,122,95,0.05);
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+[data-theme="dark"] .modal {
+    background: rgb(25,25,25);
+}
+
+[data-theme="dark"] .close-modal {
+    background: rgb(40,40,40);
+    color: var(--grey);
+}
+
+[data-theme="dark"] .close-modal:hover {
+    background: var(--grey);
+}
+
+[data-theme="dark"] .connect h2 {
+    color: var(--black);
+}
+
+[data-theme="light"] .modal {
+    background: var(--white);
+}
+
+[data-theme="light"] .close-modal {
+    background: var(--grey-light);
+    color: var(--grey);
+}
+
+[data-theme="light"] .close-modal:hover {
+    background: var(--grey);
+    color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .modal {
+        background: rgb(25,25,25);
+    }
+
+    :root:not([data-theme="light"]) .close-modal {
+        background: rgb(40,40,40);
+        color: var(--grey);
+    }
+
+    :root:not([data-theme="light"]) .close-modal:hover {
+        background: var(--grey);
+    }
+
+    :root:not([data-theme="light"]) .connect h2 {
+        color: var(--black);
+    }
 }
 
 @media (max-height: 600px) {
     .modal {
         top: 0;
         transform: translate(-50%, 0);
-        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
         max-height: 90vh;
         overflow-y: auto;
     }

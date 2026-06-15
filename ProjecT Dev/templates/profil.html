@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profil - {{.UserDetail.NameUser}} - YPlaza</title>
     <link rel="stylesheet" href="/assets/css/home.main.css">
-    <link rel="stylesheet" href="/assets/css/components/connect.css">
+    <script src="/assets/js/theme.js"></script>
 </head>
 <body>
     {{template "header" .}}
@@ -14,23 +14,23 @@
 
     <main>
         <section class="detail-section">
-            <h1>{{.UserDetail.NameUser}}</h1>
+            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:0 0 32px;">{{.UserDetail.NameUser}}</h1>
 
-            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                <div class="stat-card">
-                    <div class="stat-label">Email</div>
-                    <div class="stat-value" style="font-size:16px;color:var(--text-dark);">{{.UserDetail.Mail}}</div>
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <div class="stat-card" style="text-align:left;padding:24px;">
+                    <div class="stat-label" style="margin-bottom:6px;">Email</div>
+                    <div style="font-size:16px;color:var(--black);font-weight:500;">{{.UserDetail.Mail}}</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Statut</div>
-                    <div class="stat-value" style="font-size:16px;">
-                        {{if .UserDetail.IsAdmin}}Admin{{else}}Utilisateur{{end}}
+                <div class="stat-card" style="text-align:left;padding:24px;">
+                    <div class="stat-label" style="margin-bottom:6px;">Statut</div>
+                    <div style="font-size:16px;font-weight:600;">
+                        {{if .UserDetail.IsAdmin}}<span style="color:var(--gold);">Admin</span>{{else}}<span style="color:var(--black);">Utilisateur</span>{{end}}
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Email confirmé</div>
-                    <div class="stat-value" style="font-size:16px;">
-                        {{if .UserDetail.IsConfirmed}}Confirmé{{else}}En attente{{end}}
+                <div class="stat-card" style="text-align:left;padding:24px;">
+                    <div class="stat-label" style="margin-bottom:6px;">Email confirmé</div>
+                    <div style="font-size:16px;font-weight:600;">
+                        {{if .UserDetail.IsConfirmed}}<span style="color:var(--gold);">Confirmé</span>{{else}}<span style="color:var(--grey);">En attente</span>{{end}}
                     </div>
                 </div>
             </div>

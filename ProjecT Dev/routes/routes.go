@@ -6,6 +6,10 @@ import (
 )
 
 func InitRoutes() {
+	http.HandleFunc("/", controllers.HomeRedirect)
+	http.HandleFunc("/login", controllers.LoginPageHandler)
+	http.HandleFunc("/register", controllers.RegisterPageHandler)
+
 	http.HandleFunc("/red_project/home", controllers.HomeHandler)
 	http.HandleFunc("/red_project/home/filter", controllers.FilterHome)
 
@@ -42,4 +46,7 @@ func InitRoutes() {
 	http.HandleFunc("/red_project/admin/api/users", controllers.AdminUsersJSON)
 
 	http.HandleFunc("/red_project/error", controllers.ErrorHandler)
+
+	http.HandleFunc("/red_project/legal/", controllers.LegalHandler)
+	http.HandleFunc("/red_project/contact", controllers.ContactHandler)
 }
