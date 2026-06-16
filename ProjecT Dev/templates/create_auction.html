@@ -15,14 +15,35 @@
     <main>
         <section class="detail-section">
             <a href="/red_project/auctions" class="back-link">← Retour aux enchères</a>
-            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 32px;">Créer une enchère</h1>
+            <h1>Créer une enchère</h1>
 
-            <form action="/red_project/auction/create" method="post" class="edit-form" style="max-width:500px;margin:0;">
-                <label for="property_id">ID du bien</label>
-                <input type="number" name="property_id" id="property_id" required placeholder="Entrez l'ID du bien">
+            {{if .UserProperties}}
+            <form action="/red_project/auction/create" method="post" class="edit-form" style="max-width:600px;margin:0;">
+                <label for="property_id">Sélectionnez le bien à mettre aux enchères</label>
+                <div class="auction-prop-list">
+                    {{range .UserProperties}}
+                    <label class="auction-prop-option">
+                        <input type="radio" name="property_id" value="{{.IdProperty}}" required>
+                        <div class="auction-prop-card">
+                            <div class="auction-prop-img">
+                                {{if .ImgProperty}}
+                                <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}">
+                                {{else}}
+                                <div class="mini-card-placeholder"></div>
+                                {{end}}
+                            </div>
+                            <div class="auction-prop-info">
+                                <strong>{{.NameProperty}}</strong>
+                                <span>{{.PriceProperty}} €</span>
+                                <span class="auction-prop-desc">{{if .Surface}}{{.Surface}} m² · {{end}}{{.TypeLabel}}{{if .Location}} · {{.Location}}{{end}}</span>
+                            </div>
+                        </div>
+                    </label>
+                    {{end}}
+                </div>
 
                 <label for="start_price">Prix de départ (€)</label>
-                <input type="number" name="start_price" id="start_price" step="0.01" min="1" required>
+                <input type="number" name="start_price" id="start_price" step="0.01" min="1" required placeholder="Ex: 100000">
 
                 <label for="min_bid_step">Pas d'enchère (€)</label>
                 <input type="number" name="min_bid_step" id="min_bid_step" step="0.01" min="1" value="100">
@@ -34,6 +55,12 @@
                     <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Créer l'enchère</button>
                 </div>
             </form>
+            {{else}}
+            <div class="empty-state">
+                <p>Vous n'avez aucun bien disponible à mettre aux enchères.</p>
+                <a href="/red_project/logement/post" class="btn btn-primary" style="text-decoration:none;">Publier une annonce</a>
+            </div>
+            {{end}}
         </section>
     </main>
 

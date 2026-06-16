@@ -98,6 +98,41 @@ func CloseExpiredAuctions() {
 	DB.Exec(`UPDATE auctions SET is_active = FALSE WHERE is_active = TRUE AND end_time <= NOW()`)
 }
 
+func GetUserAuctions(userID int) ([]models.Auction, error) {
+	rows, err := DB.Query(`
+		SELECT a.id, a.property_id, p.name, a.seller_id, a.start_price, a.current_price,
+		       a.min_bid_step, a.winner_id, COALESCE(u.name,''), a.start_time, a.end_time, a.is_active,
+		       (SELECT COUNT(*) FROM bids WHERE auction_id = a.id)
+		FROM auctions a
+		JOIN properties p ON p.id = a.property_id
+		LEFT JOIN users u ON u.id = a.winner_id
+		WHERE a.seller_id = ?
+		ORDER BY a.end_time DESC`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return scanAuctions(rows)
+}
+
+func GetUserParticipatedAuctions(userID int) ([]models.Auction, error) {
+	rows, err := DB.Query(`
+		SELECT DISTINCT a.id, a.property_id, p.name, a.seller_id, a.start_price, a.current_price,
+		       a.min_bid_step, a.winner_id, COALESCE(u.name,''), a.start_time, a.end_time, a.is_active,
+		       (SELECT COUNT(*) FROM bids WHERE auction_id = a.id)
+		FROM auctions a
+		JOIN properties p ON p.id = a.property_id
+		LEFT JOIN users u ON u.id = a.winner_id
+		JOIN bids b ON b.auction_id = a.id
+		WHERE b.user_id = ?
+		ORDER BY a.end_time DESC`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return scanAuctions(rows)
+}
+
 func scanAuctions(rows *sql.Rows) ([]models.Auction, error) {
 	var auctions []models.Auction
 	for rows.Next() {

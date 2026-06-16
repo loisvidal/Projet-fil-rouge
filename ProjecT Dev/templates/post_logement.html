@@ -17,7 +17,10 @@
             <a href="/red_project/home" class="back-link">← Retour à l'accueil</a>
             <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 32px;">Publier une annonce</h1>
 
-            <form action="/red_project/logement/post" method="post" class="edit-form" style="max-width:640px;margin:0;">
+            <form action="/red_project/logement/post" method="post" enctype="multipart/form-data" class="edit-form" style="max-width:640px;margin:0;">
+                <label for="image">Image du bien</label>
+                <input type="file" name="image" id="image" accept="image/*" style="width:100%;padding:10px 0;font-size:14px;font-family:Arial,sans-serif;">
+
                 <label for="name">Nom du bien</label>
                 <input type="text" name="name" id="name" required>
 

@@ -81,6 +81,55 @@ func BuyProperty(userID, propertyID int) error {
 	return tx.Commit()
 }
 
+func GetUserUnsoldProperties(userID int) ([]models.Property, error) {
+	rows, err := DB.Query(`
+		SELECT id, name, description, price, is_sell, images, property_type, rooms, location, surface
+		FROM properties WHERE owner_id = ? AND is_sell = TRUE
+		ORDER BY id DESC`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return scanProperties(rows)
+}
+
+func GetRecommendedProperties(userID int, limit int) ([]models.Property, error) {
+	rows, err := DB.Query(`
+		SELECT DISTINCT p.id, p.name, p.description, p.price, p.is_sell, p.images,
+		       p.property_type, p.rooms, p.location, p.surface
+		FROM properties p
+		LEFT JOIN user_liked_properties ul ON ul.property_id = p.id AND ul.user_id = ?
+		LEFT JOIN user_bought_properties ub ON ub.property_id = p.id AND ub.user_id = ?
+		WHERE p.is_sell = TRUE
+		AND p.id NOT IN (
+			SELECT property_id FROM user_bought_properties WHERE user_id = ?
+		)
+		AND (
+			p.property_type IN (
+				SELECT property_type FROM user_liked_properties lp
+				JOIN properties pp ON pp.id = lp.property_id
+				WHERE lp.user_id = ?
+			)
+			OR p.location IN (
+				SELECT location FROM user_liked_properties lp
+				JOIN properties pp ON pp.id = lp.property_id
+				WHERE lp.user_id = ?
+			)
+			OR p.property_type IN (
+				SELECT property_type FROM user_bought_properties bp
+				JOIN properties pp ON pp.id = bp.property_id
+				WHERE bp.user_id = ?
+			)
+		)
+		ORDER BY p.id DESC
+		LIMIT ?`, userID, userID, userID, userID, userID, userID, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return scanProperties(rows)
+}
+
 func SearchProperties(query string) ([]models.Property, error) {
 	rows, err := DB.Query(`
 		SELECT id, name, description, price, is_sell, images, property_type, rooms, location, surface

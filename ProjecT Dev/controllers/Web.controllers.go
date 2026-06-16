@@ -33,6 +33,12 @@ func Init() {
 		"round": func(a float64) float64 {
 			return math.Round(a)
 		},
+		"initial": func(s string) string {
+			if len(s) == 0 {
+				return "?"
+			}
+			return strings.ToUpper(string(s[0]))
+		},
 	}
 
 	var err error
@@ -114,11 +120,6 @@ func RegisterPageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 		return
 	}
-	if r.Method == http.MethodPost {
-		temp.ExecuteTemplate(w, "register", AuthPageData{Profil: StructHome.Profil, Error: "L'inscription est fermée. Utilisez le compte de démonstration : toto / titi123"})
-		return
-	}
-
 	temp.ExecuteTemplate(w, "register", AuthPageData{Profil: StructHome.Profil})
 }
 

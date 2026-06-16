@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"RedProject/database"
+	"RedProject/models"
 	"fmt"
 	"net/http"
 	"net/smtp"
@@ -52,7 +54,46 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Error(w, "Inscription fermée. Comptes disponibles : toto / titi123", http.StatusForbidden)
+	username := strings.TrimSpace(r.FormValue("username"))
+	email := strings.TrimSpace(r.FormValue("email"))
+	password := r.FormValue("password")
+	confirm := r.FormValue("confirm_password")
+
+	if username == "" || email == "" || password == "" {
+		RegisterPageHandler(w, r)
+		return
+	}
+
+	if password != confirm {
+		RegisterPageHandler(w, r)
+		return
+	}
+
+	if len(password) < 6 {
+		RegisterPageHandler(w, r)
+		return
+	}
+
+	_, token, err := database.CreateUser(models.User{
+		NameUser: username,
+		Mail:     email,
+		Password: password,
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "Duplicate") || strings.Contains(err.Error(), "UNIQUE") {
+			http.Redirect(w, r, "/register", http.StatusSeeOther)
+			return
+		}
+		http.Redirect(w, r, "/register", http.StatusSeeOther)
+		return
+	}
+
+	database.ConfirmUser(token)
+
+	u, _ := database.GetUserByLogin(username)
+	u.IsConnect = true
+	StructHome.Profil = u
+	http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {

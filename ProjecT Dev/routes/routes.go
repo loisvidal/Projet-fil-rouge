@@ -26,6 +26,7 @@ func InitRoutes() {
 	http.HandleFunc("/red_project/logement/note", controllers.NoteLogement)
 
 	http.HandleFunc("/red_project/Profil", controllers.ProfilHandler)
+	http.HandleFunc("/red_project/Profil/delete", controllers.DeleteOwnAccount)
 	http.HandleFunc("/red_project/Profil/Consult/", controllers.ViewOtherProfil)
 	http.HandleFunc("/red_project/Profil/mail", controllers.MailToOtherProfil)
 

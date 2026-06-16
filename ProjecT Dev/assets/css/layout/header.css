@@ -38,31 +38,6 @@ header {
     text-decoration: none;
 }
 
-.navHeader a:hover {
-    color: var(--gold);
-}
-
-.connectHeader {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    margin: 0 20px;
-    flex-shrink: 0;
-}
-
-.user-welcome {
-    font-size: 0.9rem;
-    color: var(--black);
-    white-space: nowrap;
-    font-weight: 400;
-}
-
-.confirm-pending {
-    color: var(--gold);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
 .admin-link {
     font-size: 0.8rem;
     color: var(--gold);
@@ -70,11 +45,6 @@ header {
     padding: 5px 12px;
     border: 1px solid var(--gold);
     transition: var(--transition);
-}
-
-.admin-link:hover {
-    color: var(--azure);
-    border-color: var(--azure);
 }
 
 .isConnect_login, .isConnect_register {
@@ -93,20 +63,10 @@ header {
     color: var(--white);
 }
 
-.isConnect_login:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
-}
-
 .isConnect_register {
     background: transparent;
     color: var(--black);
     border: 1px solid var(--grey);
-}
-
-.isConnect_register:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
 }
 
 .theme-toggle {
@@ -123,11 +83,6 @@ header {
     line-height: 1;
     padding: 0;
     flex-shrink: 0;
-}
-
-.theme-toggle:hover {
-    border-color: var(--gold);
-    transform: translateY(-2px);
 }
 
 .theme-toggle .theme-icon-light { display: inline; }
@@ -162,16 +117,11 @@ header {
     font-family: Arial, sans-serif;
 }
 
-.logout-btn:hover {
-    color: #ef4444;
-}
-
 [data-theme="dark"] header { background-color: rgb(20,20,20); }
 [data-theme="dark"] .navHeader a { color: var(--black); }
 [data-theme="dark"] .user-welcome { color: var(--black); }
 [data-theme="dark"] .isConnect_register { color: var(--black); border-color: var(--grey); }
 [data-theme="dark"] .admin-link { color: var(--gold); border-color: var(--gold); }
-[data-theme="dark"] .admin-link:hover { color: var(--azure); border-color: var(--azure); }
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) header { background-color: rgb(20,20,20); }
@@ -179,31 +129,6 @@ header {
     :root:not([data-theme="light"]) .user-welcome { color: var(--black); }
     :root:not([data-theme="light"]) .isConnect_register { color: var(--black); border-color: var(--grey); }
     :root:not([data-theme="light"]) .admin-link { color: var(--gold); border-color: var(--gold); }
-    :root:not([data-theme="light"]) .admin-link:hover { color: var(--azure); border-color: var(--azure); }
-}
-
-    .navHeader a {
-        color: var(--black);
-    }
-
-    .user-welcome {
-        color: var(--black);
-    }
-
-    .isConnect_register {
-        color: var(--black);
-        border-color: var(--grey);
-    }
-
-    .admin-link {
-        color: var(--gold);
-        border-color: var(--gold);
-    }
-
-    .admin-link:hover {
-        color: var(--azure);
-        border-color: var(--azure);
-    }
 }
 
 @media (max-width: 768px) {

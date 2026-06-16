@@ -1,212 +1,213 @@
-# YPlaza - Plateforme Immobilière
+# YPlaza — Plateforme Immobilière
 
-YPlaza est une plateforme web de gestion immobilière développée en Go, connectée à MySQL, avec un système d'enchères en temps réel, un algorithme de prévision des prix par localisation vérifiée (Nominatim / OpenStreetMap), une carte interactive Leaflet, et une administration centralisée.
-
-📄 Un document de support technique détaillé (format .odt) accompagne ce README : `Support_Technique_YPlaza.odt` — il couvre le cahier des charges, les réalisations, les choix techniques et leur justification.
+YPlaza est une plateforme web de gestion immobilière développée en Go avec MySQL. Elle propose la consultation et publication de biens, un système d'enchères en temps réel, un algorithme de prévision des prix avec géocodage Nominatim (OpenStreetMap), une carte interactive Leaflet, une administration centralisée, et un mode sombre/clair.
 
 ---
 
-## Pourquoi Go ?
-
-Go (Golang) a été choisi pour ce projet pour plusieurs raisons :
-
-| Critère | Bénéfice |
-|---|---|
-| **Performance** | Compilation native, démarrage instantané, faible empreinte mémoire |
-| **Simplicité** | Syntaxe claire, pas de frameworks lourds, déploiement en un binaire |
-| **Concurrence** | Goroutines pour gérer les enchères, les sessions et les API externes en parallèle |
-| **Standard library** | `net/http`, `text/template`, `database/sql` — pas de dépendances superflues |
-| **Cross-platform** | Compilation pour Windows, Linux, macOS depuis une même base |
-| **Personnel** | C'est l'un des principaux langages que je maîtrise, ce qui garantit un code maintenable |
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Frontend HTML/CSS/JS                   │
-│  Templates Go (server-side rendering)                     │
-│  Leaflet.js (cartes OpenStreetMap gratuites)              │
-└──────────────────────┬──────────────────────────────────┘
-                       │ HTTP
-┌──────────────────────▼──────────────────────────────────┐
-│              net/http (serveur natif)                     │
-│  ├── Routes (/red_project/*)                              │
-│  ├── Middleware (rate-limit, sessions)                    │
-│  └── File server (/assets/*)                              │
-└──────────────────────┬──────────────────────────────────┘
-                       │ Appels
-┌──────────────────────▼──────────────────────────────────┐
-│               Controllers (handlers)                      │
-│  ├── Web / Connect / Profil / Logement                    │
-│  ├── Admin / Auction / Analytics                          │
-└──────────────────────┬──────────────────────────────────┘
-                       │ Requêtes
-┌──────────────────────▼──────────────────────────────────┐
-│              Database (couche d'accès)                    │
-│  ├── user_db.go / property_db.go / auction_db.go          │
-│  └── analytics_db.go / migrations                         │
-└──────────────────────┬──────────────────────────────────┘
-                       │ SQL + API externe
-┌──────────────────────▼──────────────────────────────────┐
-│           MySQL 8 (base "yplaza")                         │
-│  Tables : users, properties, auctions, bids,              │
-│           sales_history, user_liked_properties,            │
-│           user_bought_properties                          │
-├──────────────────────────────────────────────────────────┤
-│           Services externes (gratuits, sans token)        │
-│  ├── Nominatim API (OpenStreetMap) → géocodage           │
-│  │   - Vérification code postal / ville / pays            │
-│  │   - Coordonnées GPS pour la carte                      │
-│  └── Leaflet.js + tuiles OpenStreetMap → carte            │
-└──────────────────────────────────────────────────────────┘
-```
-
 ## Stack technique
 
-- **Backend** : Go 1.25, `net/http`, `golang.org/x/crypto/bcrypt`
-- **Base de données** : MySQL 8 (via `go-sql-driver/mysql`)
-- **Frontend** : HTML5, CSS3 (variables CSS, Flexbox/Grid), JavaScript vanilla
-- **Templating** : `text/template` (server-side rendering) avec fonctions personnalisées (`add`, `mul`, `div`, `round`)
-- **Cartographie** : Leaflet.js + tuiles OpenStreetMap (gratuit, sans clé API)
-- **Géocodage** : Nominatim API (OpenStreetMap, gratuit, rate-limit 1 req/s)
-- **Sécurité** : hash bcrypt, rate-limiting (5 échecs → verrouillage 15 min), confirmation email (token 2 minutes)
-- **Déploiement** : Un seul binaire Go + MySQL
-
-## Docker ?
-
-Docker n'est pas utilisé actuellement, mais voici la réflexion :
-
-| Pour Docker | Contre Docker |
+| Couche | Technologie |
 |---|---|
-| Uniformise l'environnement (Go + MySQL) | Surcharge pour un dev solo |
-| Facilite le déploiement sur un VPS | Nécessite Docker Desktop (Windows) |
-| Scaling horizontal avec plusieurs conteneurs | Le projet tient dans un binaire + MySQL |
+| **Backend** | Go (net/http, text/template, database/sql) |
+| **Base de données** | MySQL 8 (go-sql-driver/mysql) |
+| **Frontend** | HTML5, CSS3 (Flexbox/Grid, variables CSS), JavaScript vanilla |
+| **Templating** | text/template avec fonctions perso (add, mul, div, round) |
+| **Cartographie** | Leaflet.js + tuiles OpenStreetMap (gratuit, sans clé) |
+| **Géocodage** | Nominatim API (gratuit, rate-limit 1 req/s, User-Agent YPlaza/1.0) |
+| **Sécurité** | bcrypt, rate-limiting (5 échecs → blocage 15 min) |
+| **Déploiement** | Binaire unique Go + MySQL (Docker multi-stage disponible) |
 
-**Conclusion** : Docker serait pertinent si l'application devait être déployée chez un hébergeur ou si plusieurs développeurs travaillaient dessus. Pour un projet étudiant en développement local, le lancement direct via `go run .` est plus simple et plus rapide. Un `docker-compose.yml` pourra être ajouté ultérieurement si besoin.
+## Pourquoi Go ?
+
+- **Performance** : compilation native, démarrage instantané, faible empreinte mémoire
+- **Simplicité** : syntaxe claire, stdlib suffisante (net/http, text/template), un seul binaire
+- **Concurrence** : goroutines pour enchères, sessions, appels API externes
+- **Cross-platform** : compilation Windows/Linux/macOS depuis une même base
 
 ## Prérequis
 
 - Go 1.25+
-- MySQL 8 avec une base `yplaza`
+- MySQL 8 avec une base `yplaza` (ou Docker)
 
 ## Installation et lancement
 
 ```bash
-# 1. Configurer MySQL (variables d'env optionnelles, valeurs par défaut ci-dessous)
+# 1. Cloner le dépôt
+git clone <url> && cd "ProjecT Dev"
+
+# 2. Configurer MySQL (variables d'env facultatives)
 $env:DB_HOST="127.0.0.1"
 $env:DB_PORT="3306"
 $env:DB_USER="root"
 $env:DB_PASS="motdepasse"
 $env:DB_NAME="yplaza"
 
-# 2. Lancer l'application
-cd "ProjecT Dev"
+# 3. Lancer l'application
 go run . --kill-port-8080
 ```
 
 Le serveur démarre sur **http://localhost:8080/red_project/home**
 
-Les tables sont créées automatiquement au premier lancement (migration automatique).
+Les tables sont créées automatiquement au premier lancement.
 
-### Flags disponibles
+### Avec Docker
+
+```bash
+docker compose up --build
+```
+
+### Flags
 
 | Flag | Description |
 |---|---|
-| `--kill-port-80` | Tue le processus sur le port 80 au lancement |
 | `--kill-port-8080` | Tue le processus sur le port 8080 au lancement |
+| `--seed` | Réinitialise la base de données avec des données de démonstration |
 
-### Arrêt du serveur
+### Arrêt
 
-- **Ctrl+C** → arrêt gracieux avec `http.Server.Shutdown` (timeout 5s)
-- Si le port est occupé, le programme refuse de démarrer avec un message explicite
+**Ctrl+C** → arrêt gracieux (timeout 5s). Si le port est occupé, le programme refuse de démarrer avec un message explicite.
 
 ## Comptes pré-configurés
 
-| Rôle | Nom | Email | Mot de passe |
-|---|---|---|---|
-| Admin | alexandre | alexandre.petitfrere@ynov.com | Ynov_123 |
-| Utilisateur | (à créer) | — | — |
+| Rôle | Identifiant | Mot de passe |
+|---|---|---|
+| Admin | Alexandre | En_78270 |
+| Utilisateur | toto | titi123 |
+
+L'inscription est ouverte : après création du compte, l'utilisateur est automatiquement connecté (pas de confirmation email).
 
 ## Routes principales
 
 ### Pages
+
 | Route | Description |
 |---|---|
-| `/red_project/home` | Accueil avec liste des biens + filtres |
-| `/red_project/logement/` | Détail d'un bien avec carte interactive |
+| `/red_project/home` | Accueil — liste des biens, filtres (type, prix, surface), dashboard |
+| `/red_project/logement/{id}` | Détail d'un bien avec galerie, carte Leaflet, prix au m² |
 | `/red_project/Profil` | Profil utilisateur |
-| `/red_project/admin/users` | Administration (admin only) |
+| `/red_project/Profil/{id}` | Profil d'un autre utilisateur |
+| `/red_project/admin/users` | Administration des utilisateurs (admin only) |
 | `/red_project/auctions` | Liste des enchères en cours |
-| `/red_project/analytics` | Analyses et prévisions avec estimation |
+| `/red_project/auction/{id}` | Détail d'une enchère avec historique des offres |
+| `/red_project/analytics` | Analyses et prédictions |
+| `/red_project/contact` | Formulaire de contact |
+| `/red_project/logement/post` | Publier une annonce (upload d'image) |
+| `/red_project/auction/create` | Créer une enchère |
 
 ### Actions
+
 | Route | Méthode | Description |
 |---|---|---|
 | `/red_project/login` | POST | Connexion (pseudo ou email) |
-| `/red_project/register` | POST | Inscription avec email |
-| `/red_project/confirm` | GET | Confirmation email (token) |
+| `/red_project/register` | POST | Inscription (auto-confirm + auto-login) |
 | `/red_project/logout` | POST | Déconnexion |
 | `/red_project/logement/buy` | POST | Achat d'un bien |
 | `/red_project/logement/post` | POST | Publier une annonce |
-| `/red_project/logement/note` | POST | Noter un bien |
+| `/red_project/Profil/delete` | POST | Supprimer son propre compte |
 | `/red_project/auction/bid` | POST | Placer une enchère |
 | `/red_project/auction/create` | POST | Créer une enchère |
 | `/red_project/analytics/predict` | POST | Prédiction de prix (JSON) |
 | `/red_project/analytics/geocode` | POST | Géocodage Nominatim (JSON) |
-| `/red_project/analytics/report` | GET | Rapport ventes (JSON) |
+| `/red_project/admin/users/edit` | POST | Modifier un utilisateur (admin) |
+| `/red_project/admin/users/delete` | POST | Supprimer un utilisateur (admin) |
+| `/red_project/admin/users/toggle-admin` | POST | Promouvoir/rétrograder (admin) |
+| `/red_project/home/filter` | POST | Filtrage des biens (type, prix, surface) |
+| `/red_project/home/search` | POST | Recherche textuelle |
 
 ## Fonctionnalités
 
-### 🔐 Authentification sécurisée
-- Hash bcrypt des mots de passe
-- Confirmation par email (lien valable 2 minutes, SMTP configurable ou fallback console)
-- Rate-limiting : 5 échecs → verrouillage 15 minutes
+### 🔐 Authentification
+
+- Hash bcrypt des mots de passe (≥ 6 caractères)
 - Login accepte pseudo OU email
+- Auto-confirm + auto-login après inscription
+- Rate-limiting : 5 échecs → verrouillage 15 minutes
+- Suppression de compte utilisateur (pas pour les comptes hardcodés ID ≤ 2)
 
 ### 🏠 Gestion des biens
-- **9 types de biens** : Maison, Appartement, Studio, Loft, Villa, Maison de ville, Penthouse, Local commercial, Terrain
-- Liste complète avec filtres (type, prix min/max)
-- Détail avec photos, prix, surface, nombre de pièces, localisation
-- Affichage du **prix au m²** sur chaque bien
-- **Carte interactive Leaflet.js** sur chaque fiche bien
+
+- **9 types** : house, apartment, studio, loft, villa, townhouse, penthouse, commercial, land
+- Publication d'annonce avec **upload d'image** (fichier sauvegardé dans assets/img/)
+- Liste complète avec **filtres** : type de bien, prix min/max, **surface min/max**
+- Détail avec galerie photos, prix, prix au m², surface, pièces, localisation
+- **Carte interactive Leaflet** sur chaque fiche bien
 - Achat / mise en vente
 
 ### 🔨 Système d'enchères
-- Création d'enchères avec prix de départ, pas minimal et durée
-- Affichage du prix actuel, du nombre d'offres et du temps restant
+
+- Création avec prix de départ, pas minimal, durée (en heures)
+- Affichage du prix actuel, nombre d'offres, temps restant (compte à rebours)
 - Surenchère automatique
 - Historique des offres avec horodatage
 - Clôture automatique des enchères expirées
 
 ### 📊 Analyses et prévisions
+
 - **Algorithme hybride** : régression linéaire + prix au m² + facteurs de localisation
 - **Géocodage Nominatim** (OpenStreetMap) : vérification ville / code postal / pays
 - **13 zones de prix** : Paris, Lyon, Marseille, Bordeaux, Toulouse, Lille, Nice, Nantes, Strasbourg, Montpellier, Rennes, Sud, Côte d'Azur
-- **9 types de biens** avec multiplicateurs spécifiques
-- **Prix au m²** calculé à partir de l'historique des ventes
 - **Barre de confiance** et fourchette de prix
-- **Carte interactive** du lieu estimé (Leaflet.js)
-- Statistiques : ventes totales, prix moyen, prix/m² moyen, tendance du marché, région active
+- **Carte interactive** du lieu estimé
 - Rapport de ventes exportable en JSON
 
-### 🗺️ Cartographie (Leaflet.js + OpenStreetMap)
-- **100% gratuit** — aucune clé API nécessaire
-- Tuiles OpenStreetMap via CDN (`unpkg.com`)
-- Marqueurs de localisation sur les fiches bien et les estimations
-- Géocodage inverse via Nominatim (1 requête/seconde max)
+### 🗺️ Cartographie
 
-### 🌍 Géocodage Nominatim
-- API REST publique d'OpenStreetMap — **gratuite, sans token**
-- Rate-limiting intégré (1 requête/seconde)
-- Vérification : code postal → ville, ville → coordonnées GPS
-- Endpoint dédié : `/red_project/analytics/geocode`
+- 100% gratuit — aucune clé API (Leaflet.js + tuiles OpenStreetMap via unpkg.com)
+- Marqueurs de localisation sur les fiches bien et les estimations
+- Géocodage inverse via Nominatim (1 requête/s max)
 
 ### 🛡️ Administration
+
 - Gestion des utilisateurs (CRUD)
 - Promotion / rétrogradation admin
 - Statistiques globales
 
-## Types de biens disponibles
+## Frontend — Design
+
+### Palette
+
+| Variable | Light | Dark |
+|---|---|---|
+| `--gold` | #C5A059 | #D4AF37 |
+| `--azure` | #007FFF | #007FFF |
+| `--white` | #FFFFFF | rgb(30,30,30) |
+| `--black` | rgb(33,33,33) | #FFFFFF |
+| `--grey-light` | rgb(248,248,248) | rgb(10,10,10) |
+| `--grey` | rgb(127,127,127) | rgb(180,180,180) |
+
+### Dark/Light mode
+
+- Basculé via un bouton dans le header (stockage localStorage, clé `theme`)
+- `data-theme="dark"` / `data-theme="light"` sur `<html>`
+- Fallback : `@media (prefers-color-scheme: dark)` si pas de préférence utilisateur
+
+### Hero
+
+- Image de fond `villa-1.jpeg` avec overlay sombre
+- Texte dans un wrapper glassmorphism : `backdrop-filter: blur(14px)` + fond `rgba(245,245,245,0.75)` en light, adapté en dark
+
+### Composants
+
+- Search bar flottante (cartes, ombre portée)
+- Catégories avec images de fond par type + overlay gradient
+- Cartes de biens avec badge "À vendre" / "Vendu"
+- Galerie d'images avec scroll snap
+- Modale de connexion/inscription animée
+- Pages auth : login.html, register.html (standalone, design cohérent)
+
+### Responsive
+
+Toutes les pages sont adaptées aux écrans mobiles et tablettes via des media queries à 900px, 768px, 600px et 480px :
+
+- **Header** : passe en colonne, navigation compacte
+- **Search bar** : colonne sur mobile, translateY supprimé
+- **Grilles** : 2 colonnes à 768px, 1 colonne à 480px
+- **Galeries** : hauteur réduite (220px), scroll horizontal
+- **Formulaires** : champs et boutons full-width
+- **Tableaux** : overflow-x auto avec scroll
+- **Pages auth** : padding réduit, header empilé
+
+## Types de biens
 
 | Type | Label | Multiplicateur prix |
 |---|---|---|
@@ -241,89 +242,89 @@ Les tables sont créées automatiquement au premier lancement (migration automat
 
 ## Algorithme de prédiction
 
-1. **Géocodage** : la ville est vérifiée via Nominatim (OSM) → coordonnées GPS + code postal
-2. **Requête SQL** : recherche des ventes similaires (même type, même localisation)
-3. **Si ≥ 3 ventes** : calcul du prix au m² moyen + prix par pièce → moyenne pondérée
-4. **Si < 3 ventes** : fallback avec élargissement géographique (toutes localisations)
+1. **Géocodage** : la ville est vérifiée via Nominatim → coordonnées GPS + code postal
+2. **Requête SQL** : ventes similaires (même type, même localisation)
+3. **Si ≥ 3 ventes** : prix au m² moyen + prix par pièce → moyenne pondérée
+4. **Si < 3 ventes** : élargissement géographique (toutes localisations)
 5. **Si toujours < 3** : fallback théorique basé sur les facteurs de localisation
-6. **Intervalle de confiance** : écart-type / prix moyen (borné entre 30% et 95%)
-7. **Résultat** : prix estimé, fourchette, prix/m², nombre de données, confiance, carte
+6. **Intervalle de confiance** : écart-type / prix moyen (borné 30%–95%)
 
-## Frontend — Design Méditerranéen
+## API Externe — Nominatim
 
-- **Palette** : Terracotta (#D4764A), Olive (#7A9E7E), Sable (#F5F0E8), Océan (#3D5A80)
-- **Polices** : Playfair Display (titres) + Inter (corps)
-- **Inspiration** : SeLoger.com, Airbnb
-- **Responsive** : adaptation mobile/tablette
-- **Composants** : cartes arrondies, ombres chaudes, badges, barres de progression, timeline d'offres
+| Caractéristique | Détail |
+|---|---|
+| **URL** | `https://nominatim.openstreetmap.org/search` |
+| **Token** | Aucun (gratuit) |
+| **Rate limit** | 1 req/s (respecté par services/geocode.go) |
+| **User-Agent** | `YPlaza/1.0` |
+| **Usage** | Vérification adresse + coordonnées GPS pour carte Leaflet |
 
-## Gestion du port 8080
+### Endpoint YPlaza
+
+`POST /red_project/analytics/geocode`
+- `city`, `postal_code`, `country` (défaut: France)
+- Retourne `VerifiedLocation` (ville, code postal, pays, latitude, longitude)
+
+## Gestion du port
 
 - Vérification de disponibilité au démarrage
 - Option `--kill-port-8080` pour libérer le port automatiquement
-- Arrêt gracieux via `os.Signal` (Ctrl+C)
-- Timeout de shutdown de 5 secondes
+- Arrêt gracieux via `os.Signal` (Ctrl+C), timeout 5s
 - Exécutable précédent renommé automatiquement
 
 ## Structure du projet
 
 ```
-Support_Technique_YPlaza.odt    # Document de support technique (.odt)
 ProjecT Dev/
-├── main.go                    # Point d'entrée, flags, graceful shutdown
+├── main.go                          # Point d'entrée, flags, graceful shutdown, MIME types
 ├── assets/
-│   ├── css/                   # Styles (components, layout)
-│   │   ├── home.main.css      # Point d'entrée CSS
-│   │   ├── components/        # connect.css, proprety.css
-│   │   └── layout/            # header.css, home.css, footer.css
-│   ├── js/connect.js          # Modal + forms AJAX
-│   └── img/                   # Images
-├── controllers/               # Handlers HTTP
-│   ├── Web.controllers.go     # Home, Init templates, reload
-│   ├── Connect.controllers.go # Register, Login, SMTP
-│   ├── DB.controllers.go      # CheckUser, RequireLogin, ConfirmEmail
-│   ├── Profil.controllers.go  # Profil, Admin CRUD
-│   ├── Logement.controllers.go # Properties, Auction handlers
-│   └── Analytics.controllers.go # Stats, Predict, Geocode
-├── database/                  # Accès MySQL + migrations
-│   ├── database.go            # InitDB, migrate, bcrypt helpers
-│   ├── user_db.go             # CRUD utilisateurs
-│   ├── property_db.go         # CRUD propriétés + search
-│   ├── auction_db.go          # Enchères + offres
-│   └── analytics_db.go        # Ventes, stats, prédiction
-├── models/                    # Structures de données
-│   ├── struct.go              # User, Property, Auction, Prediction...
-│   ├── structPage.go          # Home page model
-│   └── const.go               # Constantes (couleurs console)
-├── services/                  # Services externes
-│   └── geocode.go             # Nominatim API client (OSM)
-├── routes/routes.go           # Déclaration des routes
-└── templates/                 # Templates HTML (12 fichiers)
-    ├── header.html, footer.html
-    ├── home.html, connect.html, error.html
-    ├── logement.html, post_logement.html
-    ├── profil.html, admin_users.html
-    ├── auctions.html, auction_detail.html, create_auction.html
-    └── analytics.html
+│   ├── css/
+│   │   ├── home.main.css            # Point d'entrée (@import de 7 fichiers)
+│   │   ├── style.css                # Pages auth standalone (login, register)
+│   │   ├── animations.css           # Shimmer, gold pulse, modal animations
+│   │   ├── components/
+│   │   │   ├── connect.css          # Modale de connexion/inscription
+│   │   │   └── proprety.css         # Cartes, détails, enchères, grilles (896 lignes)
+│   │   └── layout/
+│   │       ├── global.css           # Reset, variables CSS, container, boutons
+│   │       ├── header.css           # Header principal responsive
+│   │       ├── home.css             # Hero, search bar, catégories, about
+│   │       ├── footer.css           # Footer responsive
+│   │       ├── logement.css         # Galerie détail, bid form, bids list
+│   │       └── profil.css           # Page profil responsive
+│   ├── js/
+│   │   ├── connect.js               # Modale + forms AJAX
+│   │   └── theme.js                 # Dark/light mode toggle
+│   └── img/                         # Images des biens + uploads
+├── controllers/                     # Handlers HTTP
+│   ├── Web.controllers.go           # Home, init templates, reload
+│   ├── Connect.controllers.go       # Register, Login, SMTP
+│   ├── DB.controllers.go            # CheckUser, requireLogin, confirmEmail
+│   ├── Profil.controllers.go        # Profil, admin CRUD, delete own account
+│   ├── Logement.controllers.go      # Properties, filter, auction handlers
+│   └── Analytics.controllers.go     # Stats, predict, geocode
+├── database/                        # Accès MySQL + migrations
+│   ├── database.go                  # InitDB, migrate, bcrypt helpers
+│   ├── user_db.go                   # CRUD utilisateurs
+│   ├── property_db.go               # CRUD propriétés + search + images
+│   ├── auction_db.go                # Enchères + offres
+│   └── analytics_db.go              # Ventes, stats, prédiction
+├── models/                          # Structures de données
+│   ├── struct.go                    # User, Property, Auction, Prediction...
+│   ├── structPage.go                # Home page model
+│   └── const.go                     # Constantes
+├── services/
+│   └── geocode.go                   # Nominatim API client (OSM)
+├── routes/routes.go                 # Déclaration des routes
+├── templates/                       # 18 templates HTML
+│   ├── header.html, footer.html, connect.html
+│   ├── home.html, error.html
+│   ├── logement.html, post_logement.html
+│   ├── proprety.html (partial)
+│   ├── profil.html, admin_users.html
+│   ├── auctions.html, auction_detail.html, create_auction.html
+│   ├── analytics.html, contact.html, legal.html
+│   └── login.html, register.html
+├── Dockerfile                       # Multi-stage build
+└── docker-compose.yml               # Go + MySQL
 ```
-
-## API Externe — Nominatim / OpenStreetMap
-
-Le projet utilise **Nominatim**, l'API de géocodage gratuite d'OpenStreetMap.
-
-| Caractéristique | Détail |
-|---|---|
-| **URL** | `https://nominatim.openstreetmap.org/search` |
-| **Token** | Aucun requis (gratuit) |
-| **Rate limit** | 1 requête/seconde (respecté par `services/geocode.go`) |
-| **User-Agent** | `YPlaza/1.0 (immobilier)` |
-| **Données** | Monde entier, villes, codes postaux, pays |
-| **Usage** | Vérification adresse + coordonnées GPS pour la carte Leaflet |
-
-### Endpoint YPlaza
-`POST /red_project/analytics/geocode`
-- `city` : nom de la ville
-- `postal_code` : code postal
-- `country` : pays (défaut: France)
-
-→ Retourne `VerifiedLocation` (ville, code postal, pays, latitude, longitude)

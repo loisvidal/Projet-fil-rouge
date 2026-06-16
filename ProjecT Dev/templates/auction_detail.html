@@ -16,58 +16,70 @@
         <section class="detail-section">
             <a href="/red_project/auctions" class="back-link">← Toutes les enchères</a>
 
-            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:24px 0 16px;">{{.Auction.PropertyName}}</h1>
-
-            <div class="detail-features">
-                <span class="detail-price" style="font-size:28px;color:var(--gold);font-weight:700;">{{.Auction.CurrentPrice}} €</span>
-                <span style="color:var(--grey);">Départ : <strong style="color:var(--black);">{{.Auction.StartPrice}} €</strong></span>
-                <span style="color:var(--grey);">Pas : <strong style="color:var(--black);">{{.Auction.MinBidStep}} €</strong></span>
-                <span style="color:var(--grey);">{{.Auction.BidCount}} offre(s)</span>
+            <div class="detail-gallery">
+                {{if .Property.ImgProperty}}
+                    {{range .Property.ImgProperty}}
+                    <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy">
+                    {{end}}
+                {{else}}
+                    <div class="detail-gallery-placeholder">Aucune image disponible</div>
+                {{end}}
             </div>
 
-            <div class="auction-timer" data-seconds="{{.RemainingSeconds}}" style="font-size:18px;color:var(--gold);font-weight:600;margin:16px 0 24px;">
-                Temps restant : <span class="countdown" style="color:var(--black);">{{.RemainingSeconds}}s</span>
+            <h1>{{.Auction.PropertyName}}</h1>
+            <div class="detail-price">{{.Auction.CurrentPrice}} €</div>
+
+            <div class="detail-features">
+                <span>Départ : <strong>{{.Auction.StartPrice}} €</strong></span>
+                <span>Pas : <strong>{{.Auction.MinBidStep}} €</strong></span>
+                <span>{{.Auction.BidCount}} offre(s)</span>
+            </div>
+
+            <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
+                Temps restant : <span class="countdown">{{.RemainingSeconds}}s</span>
             </div>
 
             {{if .Auction.IsActive}}
                 {{if .Profil.IsConnect}}
                 <form action="/red_project/auction/bid" method="post" class="bid-form">
                     <input type="hidden" name="auction_id" value="{{.Auction.ID}}">
-                    <label for="amount" style="font-size:13px;font-weight:500;color:var(--grey);margin-bottom:6px;display:block;">Votre enchère (minimum {{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}} €)</label>
-                    <input type="number" name="amount" id="amount" step="0.01" min="{{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}}" required>
-                    <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Enchérir</button>
+                    <label for="amount">Votre enchère (minimum {{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}} €)</label>
+                    <div class="bid-input-row">
+                        <input type="number" name="amount" id="amount" step="0.01" min="{{printf "%.2f" (add .Auction.CurrentPrice .Auction.MinBidStep)}}" required placeholder="Montant">
+                        <button type="submit" class="btn btn-primary">Enchérir</button>
+                    </div>
                 </form>
                 {{else}}
-                <p style="color:var(--grey);font-style:italic;">Connectez-vous pour enchérir.</p>
+                <p class="login-prompt">Connectez-vous pour enchérir.</p>
                 {{end}}
             {{else}}
-                <p class="sold" style="font-size:18px;">Cette enchère est terminée.</p>
+                <p class="sold">Cette enchère est terminée.</p>
                 {{if .Auction.WinnerID}}
-                <p style="font-size:16px;color:var(--black);margin-top:8px;">Gagnant : <strong>{{.Auction.WinnerName}}</strong></p>
+                <p>Gagnant : <strong>{{.Auction.WinnerName}}</strong></p>
                 {{end}}
             {{end}}
 
-            <h2 style="font-size:22px;color:var(--black);margin:40px 0 16px;">Propriété</h2>
-            <p style="color:var(--grey);line-height:1.7;margin-bottom:16px;">{{.Property.DescProprety}}</p>
+            <h2 style="font-size:22px;color:var(--black);margin:40px 0 16px;">À propos du bien</h2>
+            <p class="detail-desc">{{.Property.DescProprety}}</p>
             <div class="detail-features">
-                <span>{{.Property.Type}}</span>
-                <span>{{.Property.Rooms}} pièces</span>
-                <span>{{.Property.Surface}} m²</span>
-                <span>{{.Property.Location}}</span>
+                <span>{{.Property.TypeLabel}}</span>
+                {{if .Property.Rooms}}<span>{{.Property.Rooms}} pièces</span>{{end}}
+                {{if .Property.Surface}}<span>{{.Property.Surface}} m²</span>{{end}}
+                {{if .Property.Location}}<span>{{.Property.Location}}</span>{{end}}
             </div>
 
             <h2 style="font-size:22px;color:var(--black);margin:40px 0 16px;">Historique des offres</h2>
             {{if .Bids}}
             <ul class="bids-list">
                 {{range .Bids}}
-                <li style="padding:12px 0;border-bottom:1px solid var(--grey);display:flex;justify-content:space-between;align-items:center;">
-                    <span style="color:var(--black);font-weight:500;">{{.UserName}}</span>
-                    <span><strong style="color:var(--gold);">{{.Amount}} €</strong> <small style="color:var(--grey);margin-left:8px;">({{.CreatedAt.Format "02/01/2006 15:04"}})</small></span>
+                <li>
+                    <span class="bid-user">{{.UserName}}</span>
+                    <span class="bid-amount"><strong>{{.Amount}} €</strong> <small>({{.CreatedAt.Format "02/01/2006 15:04"}})</small></span>
                 </li>
                 {{end}}
             </ul>
             {{else}}
-            <p style="color:var(--grey);font-style:italic;">Aucune offre pour le moment. Soyez le premier !</p>
+            <p class="empty-offers">Aucune offre pour le moment. Soyez le premier !</p>
             {{end}}
         </section>
     </main>

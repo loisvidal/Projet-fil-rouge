@@ -8,14 +8,71 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
 )
+
+func init() {
+	mime.AddExtensionType(".webp", "image/webp")
+	mime.AddExtensionType(".jpeg", "image/jpeg")
+	mime.AddExtensionType(".jpg", "image/jpeg")
+	mime.AddExtensionType(".css", "text/css")
+	mime.AddExtensionType(".js", "text/javascript")
+	mime.AddExtensionType(".png", "image/png")
+	mime.AddExtensionType(".svg", "image/svg+xml")
+}
+
+func findAssetsDir() string {
+	cwd, _ := os.Getwd()
+	cwdAssets := filepath.Join(cwd, "assets")
+	if info, err := os.Stat(cwdAssets); err == nil && info.IsDir() {
+		return cwdAssets
+	}
+	exePath, err := os.Executable()
+	if err == nil {
+		exeAssets := filepath.Join(filepath.Dir(exePath), "assets")
+		if info, err := os.Stat(exeAssets); err == nil && info.IsDir() {
+			return exeAssets
+		}
+	}
+	return cwdAssets
+}
+
+func isWindowsAdmin() bool {
+	if runtime.GOOS != "windows" {
+		return true
+	}
+	cmd := exec.Command("net", "session")
+	return cmd.Run() == nil
+}
+
+func elevateIfNeeded(portFlag string) {
+	if isWindowsAdmin() {
+		return
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		log.Printf("Impossible de déterminer l'exécutable: %v", err)
+		return
+	}
+	log.Printf("Tentative d'élévation des privilèges pour %s...\n", portFlag)
+	psCmd := fmt.Sprintf("Start-Process -FilePath '%s' -ArgumentList '%s' -Verb RunAs -WindowStyle Hidden", exe, portFlag)
+	cmd := exec.Command("powershell", "-Command", psCmd)
+	if err := cmd.Start(); err != nil {
+		log.Printf("Erreur élévation: %v", err)
+		return
+	}
+	log.Println("Processus administrateur lancé. Fermeture de celui-ci.")
+	os.Exit(0)
+}
 
 func killProcessOnPort(port string) {
 	cmd := exec.Command("netstat", "-ano")
@@ -88,9 +145,11 @@ func main() {
 	}
 
 	if *kill80 {
+		elevateIfNeeded("--kill-port-80")
 		killProcessOnPort("80")
 	}
 	if *kill8080 {
+		elevateIfNeeded("--kill-port-8080")
 		killProcessOnPort("8080")
 	}
 
@@ -100,10 +159,13 @@ func main() {
 
 	database.InitDB()
 	database.EnsureAdminAccount()
+	database.EnsurePropertyImages()
 
 	controllers.Init()
 	routes.InitRoutes()
-	fs := http.FileServer(http.Dir("assets"))
+	assetsDir := findAssetsDir()
+	log.Printf("Assets servis depuis: %s", assetsDir)
+	fs := http.FileServer(http.Dir(assetsDir))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	server := &http.Server{

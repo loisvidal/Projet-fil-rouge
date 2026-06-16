@@ -23,8 +23,9 @@
 
     <!-- HERO SECTION -->
     <section class="hero-section">
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="topLeft">
+            <div class="hero-text-wrapper">
                 <span class="subtitle">L'EXCELLENCE IMMOBILIÈRE</span>
                 <h1>Trouvez la propriété<br>de vos rêves</h1>
                 <p>Une sélection exclusive de biens d'exception dans les plus belles régions de France.</p>
@@ -48,8 +49,13 @@
                         <option value="">Tous</option>
                         <option value="house">Maison</option>
                         <option value="apartment">Appartement</option>
-                        <option value="villa">Villa</option>
+                        <option value="studio">Studio</option>
                         <option value="loft">Loft</option>
+                        <option value="villa">Villa</option>
+                        <option value="townhouse">Maison de ville</option>
+                        <option value="penthouse">Penthouse</option>
+                        <option value="commercial">Local commercial</option>
+                        <option value="land">Terrain</option>
                     </select>
                 </div>
                 <div class="date">
@@ -60,44 +66,18 @@
                     <p>PRIX MAX</p>
                     <input type="number" name="max_price" id="filter-max" placeholder="Max €" class="filter-input">
                 </div>
+                <div class="date">
+                    <p>SURFACE MIN</p>
+                    <input type="number" name="min_surface" id="filter-surface-min" placeholder="0 m²" class="filter-input">
+                </div>
+                <div class="date">
+                    <p>SURFACE MAX</p>
+                    <input type="number" name="max_surface" id="filter-surface-max" placeholder="Max m²" class="filter-input">
+                </div>
                 <button type="submit" class="btn btn-primary">RECHERCHER</button>
             </form>
         </div>
     </div>
-
-    <!-- DASHBOARD SECTION -->
-    <section class="dashboard-section">
-        <div class="bottom user-dashboard container">
-            {{if .Profil.IsConnect}}
-                <div class="dashboard-card">
-                    <p>MES ACHATS</p>
-                    <select class="dashboard-select" aria-label="Biens achetés">
-                        <option disabled selected>Sélectionner un bien</option>
-                        {{range .Profil.BuyProperty}}
-                            <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
-                        {{else}}
-                            <option disabled>Aucun achat</option>
-                        {{end}}
-                    </select>
-                </div>
-                <div class="dashboard-card center-card">
-                    <p>MES ANNONCES</p>
-                    <select class="dashboard-select" aria-label="Mes annonces">
-                        <option disabled selected>Sélectionner une annonce</option>
-                        {{range .Profil.SellProperty}}
-                            <option value="{{.IdProperty}}">{{.NameProperty}} - {{.PriceProperty}}€</option>
-                        {{else}}
-                            <option disabled>Aucune annonce</option>
-                        {{end}}
-                    </select>
-                </div>
-            {{else}}
-                <div class="dashboard-card empty-dashboard">
-                    <p>Connectez-vous pour gérer vos biens et participer aux enchères.</p>
-                </div>
-            {{end}}
-        </div>
-    </section>
 
     <!-- FEATURED PROPERTIES -->
     <section class="featured-section" id="properties">
@@ -143,36 +123,28 @@
             <h2 class="section-title">Trouvez le bien qui vous correspond</h2>
             <p class="section-subtitle">Parcourez nos catégories de biens d'exception</p>
             <div class="categories-grid">
-                <a href="/red_project/home" class="category-card">
-                    <div style="height:100%;background:var(--gold);display:flex;align-items:flex-end;padding:20px;">
-                        <div>
-                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Appartements</h3>
-                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">12 biens disponibles</span>
-                        </div>
+                <a href="/red_project/home" class="category-card" style="background-image: url('/assets/img/appartement-1.webp');">
+                    <div class="overlay">
+                        <h3>Appartements</h3>
+                        <span>12 biens disponibles</span>
                     </div>
                 </a>
-                <a href="/red_project/home" class="category-card">
-                    <div style="height:100%;background:var(--grey);display:flex;align-items:flex-end;padding:20px;">
-                        <div>
-                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Maisons & Villas</h3>
-                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">8 biens disponibles</span>
-                        </div>
+                <a href="/red_project/home" class="category-card" style="background-image: url('/assets/img/maison-1.webp');">
+                    <div class="overlay">
+                        <h3>Maisons & Villas</h3>
+                        <span>8 biens disponibles</span>
                     </div>
                 </a>
-                <a href="/red_project/home" class="category-card">
-                    <div style="height:100%;background:var(--black);display:flex;align-items:flex-end;padding:20px;">
-                        <div>
-                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Lofts & Studios</h3>
-                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">5 biens disponibles</span>
-                        </div>
+                <a href="/red_project/home" class="category-card" style="background-image: url('/assets/img/studio-1.jpg');">
+                    <div class="overlay">
+                        <h3>Lofts & Studios</h3>
+                        <span>5 biens disponibles</span>
                     </div>
                 </a>
-                <a href="/red_project/home" class="category-card">
-                    <div style="height:100%;background:var(--gold);display:flex;align-items:flex-end;padding:20px;">
-                        <div>
-                            <h3 style="color:#fff;font-size:1.1rem;margin-bottom:2px;">Commerces</h3>
-                            <span style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">3 biens disponibles</span>
-                        </div>
+                <a href="/red_project/home" class="category-card" style="background-image: url('/assets/img/commerce-1.webp');">
+                    <div class="overlay">
+                        <h3>Commerces</h3>
+                        <span>3 biens disponibles</span>
                     </div>
                 </a>
             </div>

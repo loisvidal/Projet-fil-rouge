@@ -1,16 +1,15 @@
 {{define "property"}}
-<a href="" class="property">
-    <img src="{{.ImgProperty}}" alt="" class="imgProperty">
-    <p class="nameProperty">{{.NameProperty}}</p>
-    {{if .IsSellProperty false}}
-        <p class="priceProperty">{{.PriceProperty}}</p>
-        <form action="/RedProject/logement/buy" class="formProperty">
-            <button type="submit" class="buyButtonProperty">Buy Property</button>
-        </form>
-    {{else}}
-        <form action="/RedProject/logement/?{{.IdProperty}}" class="formProperty">
-            <button type="submit" class="consultButtonProperty">Consult Property</button>
-        </form>
-    {{end}}
+<a href="/red_project/logement/{{.IdProperty}}" class="property" style="text-decoration:none;color:inherit;">
+    <div class="img-wrapper" style="position:relative;overflow:hidden;">
+        {{if .ImgProperty}}
+            <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" class="imgProperty" style="width:100%;height:200px;object-fit:cover;display:block;">
+        {{else}}
+            <div style="width:100%;height:200px;background:var(--grey-light);display:flex;align-items:center;justify-content:center;color:var(--grey);">Aucune image</div>
+        {{end}}
+    </div>
+    <div style="padding:12px 0;">
+        <p class="nameProperty" style="font-size:1rem;font-weight:600;color:var(--black);margin:0 0 4px;">{{.NameProperty}}</p>
+        <p class="priceProperty" style="font-size:1.1rem;font-weight:700;color:var(--gold);margin:0;">{{.PriceProperty}} €</p>
+    </div>
 </a>
 {{end}}

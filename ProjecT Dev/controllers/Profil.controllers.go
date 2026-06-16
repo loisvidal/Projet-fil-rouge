@@ -24,14 +24,29 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	home, _ := ReloadHome()
+
+	myAuctions, _ := database.GetUserAuctions(StructHome.Profil.IdUser)
+	participated, _ := database.GetUserParticipatedAuctions(StructHome.Profil.IdUser)
+	recommended, _ := database.GetRecommendedProperties(StructHome.Profil.IdUser, 8)
+
+	if recommended == nil {
+		recommended = []models.Property{}
+	}
+
 	data := struct {
-		Profil     models.User
-		UserDetail models.User
-		Properties []models.Property
+		Profil       models.User
+		UserDetail   models.User
+		Properties   []models.Property
+		MyAuctions   []models.Auction
+		Participated []models.Auction
+		Recommended  []models.Property
 	}{
-		Profil:     home.Profil,
-		UserDetail: u,
-		Properties: home.ListProperty,
+		Profil:       home.Profil,
+		UserDetail:   u,
+		Properties:   home.ListProperty,
+		MyAuctions:   myAuctions,
+		Participated: participated,
+		Recommended:  recommended,
 	}
 
 	temp.ExecuteTemplate(w, "profil", data)
@@ -78,6 +93,23 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		return
 	}
+	StructHome.Profil = models.User{}
+	http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
+}
+
+func DeleteOwnAccount(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		return
+	}
+	if !StructHome.Profil.IsConnect {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	if isHardcodedUser(StructHome.Profil.IdUser) {
+		http.Error(w, "Impossible de supprimer un compte système", http.StatusForbidden)
+		return
+	}
+	database.DeleteUser(StructHome.Profil.IdUser)
 	StructHome.Profil = models.User{}
 	http.Redirect(w, r, "/red_project/home", http.StatusSeeOther)
 }

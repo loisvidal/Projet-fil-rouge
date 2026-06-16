@@ -103,30 +103,16 @@ h4 { font-size: 1.1rem; }
     color: var(--white);
 }
 
-.btn-primary:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
-}
-
 .btn-outline {
     background: transparent;
     border: 1px solid var(--grey);
     color: var(--black);
 }
 
-.btn-outline:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
-}
-
 .btn-ghost {
     background: transparent;
     color: var(--grey);
     border: 1px solid transparent;
-}
-
-.btn-ghost:hover {
-    color: var(--black);
 }
 
 .section-title {
@@ -153,11 +139,6 @@ h4 { font-size: 1.1rem; }
     font-size: 0.85rem;
     color: var(--grey);
     font-weight: 500;
-    transition: var(--transition);
-}
-
-.back-link:hover {
-    color: var(--gold);
 }
 
 .page-header {
@@ -197,8 +178,8 @@ h4 { font-size: 1.1rem; }
 
 [data-theme="dark"] {
     --grey-light: rgb(10,10,10);
-    --black: rgb(220,220,220);
-    --grey: rgb(150,150,150);
+    --black: #FFFFFF;
+    --grey: rgb(180,180,180);
     --gold: #D4AF37;
     --aliceblue: rgb(20,25,35);
     --white: rgb(30,30,30);
@@ -210,8 +191,8 @@ h4 { font-size: 1.1rem; }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         --grey-light: rgb(10,10,10);
-        --black: rgb(220,220,220);
-        --grey: rgb(150,150,150);
+        --black: #FFFFFF;
+        --grey: rgb(180,180,180);
         --gold: #D4AF37;
         --aliceblue: rgb(20,25,35);
         --white: rgb(30,30,30);
@@ -219,22 +200,6 @@ h4 { font-size: 1.1rem; }
     :root:not([data-theme="light"]) body { background-color: var(--grey-light); color: var(--black); }
     :root:not([data-theme="light"]) .btn-primary { background: var(--gold); color: #000; }
     :root:not([data-theme="light"]) .btn-outline { border-color: var(--grey); color: var(--black); }
-}
-
-    body {
-        background-color: var(--grey-light);
-        color: var(--black);
-    }
-
-    .btn-primary {
-        background: var(--gold);
-        color: #000;
-    }
-
-    .btn-outline {
-        border-color: var(--grey);
-        color: var(--black);
-    }
 }
 
 @media (max-width: 768px) {

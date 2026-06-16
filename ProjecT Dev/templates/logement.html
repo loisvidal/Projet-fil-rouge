@@ -19,8 +19,12 @@
             <a href="/red_project/home" class="back-link">← Retour à l'accueil</a>
 
             <div class="detail-gallery" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:20px 0 28px;scroll-snap-type:x mandatory;">
-                {{range .Property.ImgProperty}}
-                <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy" style="height:400px;object-fit:cover;scroll-snap-align:start;flex-shrink:0;">
+                {{if .Property.ImgProperty}}
+                    {{range .Property.ImgProperty}}
+                    <img src="/assets/img/{{.}}" alt="{{$.Property.NameProperty}}" loading="lazy">
+                    {{end}}
+                {{else}}
+                    <div class="detail-gallery-placeholder">Aucune image disponible</div>
                 {{end}}
             </div>
 
@@ -69,7 +73,7 @@
     <script src="/assets/js/connect.js" defer></script>
     <script>
         (async function() {
-            const location = {{.Property.Location}};
+            const location = "{{.Property.Location}}";
             if (location) {
                 try {
                     const data = new URLSearchParams({ city: location, country: 'France' });

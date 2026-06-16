@@ -15,7 +15,7 @@
     <main>
         <section class="container">
             <div class="page-header">
-                <h1 style="font-size:32px;font-weight:600;color:var(--black);margin:0;">Enchères en cours</h1>
+                <h1>Enchères en cours</h1>
                 {{if .Profil.IsConnect}}
                 <a href="/red_project/auction/create" class="btn btn-primary" style="text-decoration:none;">+ Créer une enchère</a>
                 {{end}}
@@ -24,21 +24,35 @@
             {{if .Auctions}}
             <div class="auction-grid">
                 {{range .Auctions}}
-                <div class="auction-card">
-                    <h3 style="font-size:18px;color:var(--black);margin:0 0 12px;">{{.PropertyName}}</h3>
-                    <div class="auction-price">{{.CurrentPrice}} €</div>
-                    <div class="auction-meta">Prix de départ : {{.StartPrice}} € · Pas : {{.MinBidStep}} €</div>
-                    <div class="auction-meta">{{.BidCount}} offre(s)</div>
-                    <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
-                        Temps restant : <span class="countdown">{{.RemainingSeconds}}s</span>
+                <article class="auction-card" onclick="window.location='/red_project/auction/{{.ID}}'">
+                    <div class="img-wrapper">
+                        {{if .ImgProperty}}
+                            <img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.PropertyName}}" class="imgRoom" loading="lazy">
+                        {{else}}
+                            <div class="imgRoom placeholder-img"></div>
+                        {{end}}
+                        <span class="badge">Enchère</span>
                     </div>
-                    <a href="/red_project/auction/{{.ID}}" class="auction-cta">Voir l'enchère</a>
-                </div>
+                    <div class="auction-body">
+                        <h3>{{.PropertyName}}</h3>
+                        <div class="auction-price">{{.CurrentPrice}} €</div>
+                        <div class="auction-meta">Départ : {{.StartPrice}} € · Pas : {{.MinBidStep}} €</div>
+                        <div class="auction-features">
+                            {{if .TypeLabel}}<span>{{.TypeLabel}}</span>{{end}}
+                            {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                            {{if .Location}}<span>{{.Location}}</span>{{end}}
+                        </div>
+                        <div class="auction-timer" data-seconds="{{.RemainingSeconds}}">
+                            Temps restant : <span class="countdown">{{.RemainingSeconds}}s</span>
+                        </div>
+                        <div class="auction-meta">{{.BidCount}} offre(s)</div>
+                    </div>
+                </article>
                 {{end}}
             </div>
             {{else}}
             <div class="empty-state">
-                <p style="font-size:16px;color:var(--grey);margin-bottom:20px;">Aucune enchère en cours pour le moment.</p>
+                <p>Aucune enchère en cours pour le moment.</p>
                 {{if .Profil.IsConnect}}
                 <a href="/red_project/auction/create" class="btn btn-primary" style="text-decoration:none;">Créer la première enchère</a>
                 {{end}}

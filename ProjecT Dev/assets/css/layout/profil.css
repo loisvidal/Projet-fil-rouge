@@ -1,0 +1,143 @@
+/* ====================================
+   PROFIL HEADER
+   ==================================== */
+.profil-head {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 0 0;
+}
+
+.profil-head-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profil-head-avatar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(197,160,89,0.4);
+}
+
+/* ====================================
+   CREATE AUCTION - PROPERTY SELECTOR
+   ==================================== */
+.auction-prop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.auction-prop-option {
+    cursor: pointer;
+}
+
+.auction-prop-option input[type="radio"] {
+    display: none;
+}
+
+.auction-prop-card {
+    display: flex;
+    gap: 14px;
+    padding: 12px;
+    border: 2px solid var(--grey);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
+    background: var(--white);
+}
+
+.auction-prop-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.auction-prop-option input[type="radio"]:checked + .auction-prop-card {
+    border-color: var(--gold);
+    background: var(--aliceblue);
+}
+
+.auction-prop-img {
+    width: 100px;
+    height: 70px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.auction-prop-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.auction-prop-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+}
+
+.auction-prop-info strong {
+    font-size: 0.95rem;
+    color: var(--black);
+}
+
+.auction-prop-info span {
+    font-size: 0.85rem;
+    color: var(--grey);
+}
+
+.auction-prop-info .auction-prop-desc {
+    font-size: 0.78rem;
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .profil-head {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .profil-head-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profil-head {
+        padding-top: 20px;
+    }
+
+    .profil-head-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 1.1rem;
+    }
+
+    .auction-prop-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .auction-prop-img {
+        width: 100%;
+        height: 140px;
+    }
+}

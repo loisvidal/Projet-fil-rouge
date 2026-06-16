@@ -125,13 +125,7 @@ body > footer { animation-delay: 0.15s; }
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.roomCard:hover,
-.category-card:hover,
-.dashboard-card:hover,
-.stat-item:hover,
-.auction-card:hover {
-    box-shadow: 0 8px 30px rgba(197, 160, 89, 0.15);
-}
+
 
 /* ==========================================
    SUBTLE FLOATING ANIMATION ON HERO

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -102,15 +103,17 @@ func seedProperties() {
 		{"Maison de Ville Traditionnelle", "Magnifique maison de ville rénovée, alliant charme ancien et confort moderne.", 420000, 2, "townhouse", 4, "Bordeaux", 140},
 	}
 	for _, p := range props {
+		images := DefaultImagesForType(p.PropType)
+		imagesJSON, _ := json.Marshal(images)
 		_, err := DB.Exec(
-			`INSERT INTO properties (name, description, price, is_sell, owner_id, property_type, rooms, location, surface, created_at)
-			 VALUES (?, ?, ?, TRUE, ?, ?, ?, ?, ?, ?)`,
-			p.Name, p.Desc, p.Price, p.OwnerID, p.PropType, p.Rooms, p.Location, p.Surface, now,
+			`INSERT INTO properties (name, description, price, is_sell, images, owner_id, property_type, rooms, location, surface, created_at)
+			 VALUES (?, ?, ?, TRUE, ?, ?, ?, ?, ?, ?, ?)`,
+			p.Name, p.Desc, p.Price, string(imagesJSON), p.OwnerID, p.PropType, p.Rooms, p.Location, p.Surface, now,
 		)
 		if err != nil {
 			log.Fatalf("Erreur insertion property %s: %v", p.Name, err)
 		}
-		log.Printf("  Propriété créée: %s (%.0f€, %s)", p.Name, p.Price, p.PropType)
+		log.Printf("  Propriété créée: %s (%.0f€, %s, images=%v)", p.Name, p.Price, p.PropType, images)
 	}
 }
 

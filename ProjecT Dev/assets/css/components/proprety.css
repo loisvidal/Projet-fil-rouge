@@ -11,19 +11,24 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: var(--transition);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     background: transparent;
 }
 
 .roomCard:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
 }
 
 .img-wrapper {
     position: relative;
     overflow: hidden;
+}
+
+.roomCard:hover .imgRoom {
+    transform: scale(1.05);
 }
 
 .imgRoom {
@@ -32,10 +37,6 @@
     object-fit: cover;
     transition: transform 0.3s ease;
     display: block;
-}
-
-.roomCard:hover .imgRoom {
-    transform: scale(1.03);
 }
 
 .badge {
@@ -97,10 +98,6 @@
     letter-spacing: 1px;
     transform: translateY(100%);
     transition: var(--transition);
-}
-
-.roomCard:hover .roomLabel {
-    transform: translateY(0);
 }
 
 .price {
@@ -204,10 +201,6 @@
     font-weight: 600;
 }
 
-.login-prompt a:hover {
-    color: var(--black);
-}
-
 .property-map {
     overflow: hidden;
 }
@@ -220,10 +213,6 @@
     color: var(--grey);
     font-weight: 500;
     margin-bottom: 20px;
-}
-
-.back-link:hover {
-    color: var(--gold);
 }
 
 /* ====================================
@@ -256,17 +245,41 @@
 
 .auction-card {
     background: var(--white);
-    padding: 24px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     transition: var(--transition);
+    cursor: pointer;
+    overflow: hidden;
 }
 
-.auction-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+.auction-card .img-wrapper {
+    position: relative;
+    overflow: hidden;
 }
 
-.auction-card h3 {
+.auction-card .img-wrapper .imgRoom {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.auction-card .img-wrapper .placeholder-img {
+    width: 100%;
+    height: 200px;
+    background: var(--grey-light);
+}
+
+.auction-card .img-wrapper .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+
+.auction-body {
+    padding: 20px;
+}
+
+.auction-body h3 {
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 8px;
@@ -290,25 +303,69 @@
     font-size: 0.9rem;
     color: var(--gold);
     font-weight: 500;
-    margin: 12px 0;
+    margin: 8px 0;
 }
 
-.auction-cta {
-    display: inline-block;
-    padding: 10px 24px;
-    background: var(--gold);
-    color: #fff;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
+.auction-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.auction-features span {
+    font-size: 0.75rem;
+    color: var(--grey);
+    background: var(--aliceblue);
+    padding: 4px 10px;
+    border: 1px solid var(--grey);
+}
+
+.bid-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.bid-input-row input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--grey);
+    font-size: 1rem;
     font-family: Arial, sans-serif;
+    background: var(--grey-light);
+    color: var(--black);
+    box-sizing: border-box;
 }
 
-.auction-cta:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
+.bid-input-row input:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.bid-input-row .btn {
+    padding: 12px 28px;
+    border: none;
+}
+
+.bid-user {
+    color: var(--black);
+    font-weight: 500;
+}
+
+.bid-amount strong {
+    color: var(--gold);
+}
+
+.bid-amount small {
+    color: var(--grey);
+    margin-left: 8px;
+}
+
+.empty-offers {
+    color: var(--grey);
+    font-style: italic;
+    padding: 20px 0;
 }
 
 /* ====================================
@@ -360,11 +417,6 @@
     font-family: Arial, sans-serif;
 }
 
-.bid-form button:hover {
-    opacity: 0.8;
-    transform: translateY(-2px);
-}
-
 /* ====================================
    BIDS LIST
    ==================================== */
@@ -405,10 +457,6 @@
     box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     text-align: center;
     transition: var(--transition);
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
 }
 
 .stat-icon {
@@ -611,10 +659,6 @@
     color: var(--grey);
 }
 
-.sales-table tr:hover td, .admin-table tr:hover td {
-    background: var(--aliceblue);
-}
-
 .sales-table tr:last-child td, .admin-table tr:last-child td {
     border-bottom: none;
 }
@@ -709,11 +753,6 @@
     text-decoration: none;
     transition: var(--transition);
     font-family: Arial, sans-serif;
-}
-
-.btn-sm:hover {
-    opacity: 0.85;
-    transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -930,8 +969,13 @@
         padding: 20px;
     }
 
-    .auction-card {
-        padding: 18px;
+    .auction-card .img-wrapper .imgRoom,
+    .auction-card .img-wrapper .placeholder-img {
+        height: 160px;
+    }
+
+    .auction-body {
+        padding: 14px;
     }
 
     .detail-price {
@@ -940,5 +984,15 @@
 
     .property-info {
         padding: 14px 0;
+    }
+
+    .bid-input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bid-input-row .btn {
+        width: 100%;
+        text-align: center;
     }
 }

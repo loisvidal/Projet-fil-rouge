@@ -3,11 +3,12 @@ package controllers
 import (
 	"RedProject/database"
 	models "RedProject/models"
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/smtp"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -130,23 +131,49 @@ func PostLogement(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.ParseMultipartForm(10 << 20)
+
 	price, _ := strconv.ParseFloat(r.FormValue("price"), 64)
 	rooms, _ := strconv.Atoi(r.FormValue("rooms"))
 	surface, _ := strconv.ParseFloat(r.FormValue("surface"), 64)
+
+	propType := r.FormValue("property_type")
+
+	imgProperty := database.DefaultImagesForType(propType)
+
+	file, header, err := r.FormFile("image")
+	if err == nil {
+		defer file.Close()
+		ext := filepath.Ext(header.Filename)
+		if ext == "" {
+			ext = ".jpg"
+		}
+		filename := fmt.Sprintf("upload_%d%s", time.Now().UnixNano(), ext)
+
+		imgDir := assetsImgDir()
+		os.MkdirAll(imgDir, os.ModePerm)
+		dst, err := os.Create(filepath.Join(imgDir, filename))
+		if err == nil {
+			defer dst.Close()
+			io.Copy(dst, file)
+			imgProperty = []string{filename}
+		}
+	}
 
 	prop := models.Property{
 		NameProperty:   r.FormValue("name"),
 		DescProprety:   r.FormValue("description"),
 		PriceProperty:  price,
 		IsSellProperty: true,
+		ImgProperty:    imgProperty,
 		OwnerID:        StructHome.Profil.IdUser,
-		Type:           r.FormValue("property_type"),
+		Type:           propType,
 		Rooms:          rooms,
 		Location:       r.FormValue("location"),
 		Surface:        surface,
 	}
 
-	_, err := database.CreateProperty(prop)
+	_, err = database.CreateProperty(prop)
 	if err != nil {
 		http.Error(w, "Erreur lors de la création", http.StatusInternalServerError)
 		return
@@ -196,6 +223,8 @@ func FilterHome(w http.ResponseWriter, r *http.Request) {
 	propType := r.FormValue("type")
 	minPrice := r.FormValue("min_price")
 	maxPrice := r.FormValue("max_price")
+	minSurface := r.FormValue("min_surface")
+	maxSurface := r.FormValue("max_surface")
 	location := r.FormValue("location")
 
 	allProps, err := database.GetAllProperties()
@@ -220,6 +249,18 @@ func FilterHome(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 		}
+		if minSurface != "" {
+			min, _ := strconv.ParseFloat(minSurface, 64)
+			if p.Surface < min {
+				continue
+			}
+		}
+		if maxSurface != "" {
+			max, _ := strconv.ParseFloat(maxSurface, 64)
+			if p.Surface > max {
+				continue
+			}
+		}
 		if location != "" && !strings.Contains(strings.ToLower(p.Location), strings.ToLower(location)) {
 			continue
 		}
@@ -239,8 +280,7 @@ func FilterHome(w http.ResponseWriter, r *http.Request) {
 		ListProperty: filtered,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	temp.ExecuteTemplate(w, "home", data)
 }
 
 // ============= Auction Handlers =============
@@ -254,28 +294,32 @@ func AuctionHandler(w http.ResponseWriter, r *http.Request) {
 
 	home, _ := ReloadHome()
 	now := time.Now()
-	var auctionsWithTime []struct {
+
+	type AuctionItem struct {
 		models.Auction
 		RemainingSeconds int
+		ImgProperty      []string
+		TypeLabel        string
+		Surface          float64
+		Rooms            int
+		Location         string
 	}
+
+	var auctionsWithTime []AuctionItem
 
 	for _, a := range auctions {
 		remaining := int(a.EndTime.Sub(now).Seconds())
 		if remaining < 0 {
 			remaining = 0
 		}
-		auctionsWithTime = append(auctionsWithTime, struct {
-			models.Auction
-			RemainingSeconds int
-		}{a, remaining})
+		prop, _ := database.GetPropertyByID(a.PropertyID)
+		item := AuctionItem{a, remaining, prop.ImgProperty, prop.TypeLabel(), prop.Surface, prop.Rooms, prop.Location}
+		auctionsWithTime = append(auctionsWithTime, item)
 	}
 
 	data := struct {
 		Profil   models.User
-		Auctions []struct {
-			models.Auction
-			RemainingSeconds int
-		}
+		Auctions []AuctionItem
 	}{
 		Profil:   home.Profil,
 		Auctions: auctionsWithTime,
@@ -368,7 +412,18 @@ func CreateAuctionHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet {
 		home, _ := ReloadHome()
-		temp.ExecuteTemplate(w, "create_auction", home)
+		myProps, _ := database.GetUserUnsoldProperties(StructHome.Profil.IdUser)
+		if myProps == nil {
+			myProps = []models.Property{}
+		}
+		data := struct {
+			Profil          models.User
+			UserProperties  []models.Property
+		}{
+			Profil:         home.Profil,
+			UserProperties: myProps,
+		}
+		temp.ExecuteTemplate(w, "create_auction", data)
 		return
 	}
 
@@ -398,4 +453,20 @@ func CreateAuctionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/red_project/auctions", http.StatusSeeOther)
+}
+
+func assetsImgDir() string {
+	cwd, _ := os.Getwd()
+	dirs := []string{
+		filepath.Join(cwd, "assets", "img"),
+	}
+	if exe, err := os.Executable(); err == nil {
+		dirs = append(dirs, filepath.Join(filepath.Dir(exe), "assets", "img"))
+	}
+	for _, d := range dirs {
+		if info, err := os.Stat(d); err == nil && info.IsDir() {
+			return d
+		}
+	}
+	return dirs[0]
 }

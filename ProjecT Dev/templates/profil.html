@@ -13,30 +13,152 @@
     {{template "connect" .}}
 
     <main>
-        <section class="detail-section">
-            <h1 style="font-size:30px;font-weight:600;color:var(--black);margin:0 0 32px;">{{.UserDetail.NameUser}}</h1>
+        <section class="featured-section" id="properties">
+            <div class="container">
 
-            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-                <div class="stat-card" style="text-align:left;padding:24px;">
-                    <div class="stat-label" style="margin-bottom:6px;">Email</div>
-                    <div style="font-size:16px;color:var(--black);font-weight:500;">{{.UserDetail.Mail}}</div>
-                </div>
-                <div class="stat-card" style="text-align:left;padding:24px;">
-                    <div class="stat-label" style="margin-bottom:6px;">Statut</div>
-                    <div style="font-size:16px;font-weight:600;">
-                        {{if .UserDetail.IsAdmin}}<span style="color:var(--gold);">Admin</span>{{else}}<span style="color:var(--black);">Utilisateur</span>{{end}}
+                <div class="profil-head">
+                    <div class="profil-head-avatar">{{initial .UserDetail.NameUser}}</div>
+                    <div>
+                        <h2 class="section-title" style="margin-bottom:4px;">{{.UserDetail.NameUser}}</h2>
+                        <p class="section-subtitle" style="margin-bottom:0;">{{.UserDetail.Mail}} · {{if .UserDetail.IsAdmin}}Administrateur{{else}}Membre{{end}}</p>
                     </div>
                 </div>
-                <div class="stat-card" style="text-align:left;padding:24px;">
-                    <div class="stat-label" style="margin-bottom:6px;">Email confirmé</div>
-                    <div style="font-size:16px;font-weight:600;">
-                        {{if .UserDetail.IsConfirmed}}<span style="color:var(--gold);">Confirmé</span>{{else}}<span style="color:var(--grey);">En attente</span>{{end}}
-                    </div>
+
+                {{if eq .Profil.IdUser .UserDetail.IdUser}}
+
+                {{if .MyAuctions}}
+                <h2 class="section-title" style="margin-top:48px;">Mes enchères</h2>
+                <p class="section-subtitle">Ventes aux enchères que j'ai créées</p>
+                <div class="property-grid">
+                    {{range .MyAuctions}}
+                    <article class="roomCard" onclick="window.location='/red_project/auction/{{.ID}}'">
+                        <div class="img-wrapper">
+                            <div class="imgRoom placeholder-img"></div>
+                            <span class="badge">Enchère</span>
+                            <span class="roomLabel">{{.PropertyName}}</span>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="price">{{.CurrentPrice}} €</h3>
+                            <div class="features">
+                                <span>{{.BidCount}} offre(s)</span>
+                                {{if .IsActive}}<span>Active</span>{{else}}<span>Terminée</span>{{end}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
                 </div>
+                {{end}}
+
+                {{if .Participated}}
+                <h2 class="section-title" style="margin-top:48px;">Enchères auxquelles j'ai participé</h2>
+                <p class="section-subtitle">Toutes les enchères sur lesquelles j'ai placé une offre</p>
+                <div class="property-grid">
+                    {{range .Participated}}
+                    <article class="roomCard" onclick="window.location='/red_project/auction/{{.ID}}'">
+                        <div class="img-wrapper">
+                            <div class="imgRoom placeholder-img"></div>
+                            <span class="badge">Enchère</span>
+                            <span class="roomLabel">{{.PropertyName}}</span>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="price">{{.CurrentPrice}} €</h3>
+                            <div class="features">
+                                <span>Départ {{.StartPrice}} €</span>
+                                <span>{{.BidCount}} offre(s)</span>
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if .UserDetail.BuyProperty}}
+                <h2 class="section-title" style="margin-top:48px;">Mes biens achetés</h2>
+                <p class="section-subtitle">Propriétés que j'ai acquises</p>
+                <div class="property-grid">
+                    {{range .UserDetail.BuyProperty}}
+                    <article class="roomCard" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
+                        <div class="img-wrapper">
+                            {{if .ImgProperty}}<img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" class="imgRoom" loading="lazy">{{else}}<div class="imgRoom placeholder-img"></div>{{end}}
+                            <span class="badge sold">Acheté</span>
+                            <span class="roomLabel">{{.NameProperty}}</span>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="price">{{.PriceProperty}} €</h3>
+                            <div class="features">
+                                {{if .TypeLabel}}<span>{{.TypeLabel}}</span>{{end}}
+                                {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if .UserDetail.SellProperty}}
+                <h2 class="section-title" style="margin-top:48px;">Mes biens vendus</h2>
+                <p class="section-subtitle">Propriétés que j'ai mises en vente</p>
+                <div class="property-grid">
+                    {{range .UserDetail.SellProperty}}
+                    <article class="roomCard" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
+                        <div class="img-wrapper">
+                            {{if .ImgProperty}}<img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" class="imgRoom" loading="lazy">{{else}}<div class="imgRoom placeholder-img"></div>{{end}}
+                            <span class="badge">{{if .IsSellProperty}}À vendre{{else}}Vendu{{end}}</span>
+                            <span class="roomLabel">{{.NameProperty}}</span>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="price">{{.PriceProperty}} €</h3>
+                            <div class="features">
+                                {{if .TypeLabel}}<span>{{.TypeLabel}}</span>{{end}}
+                                {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if .Recommended}}
+                <h2 class="section-title" style="margin-top:48px;">Recommandations pour vous</h2>
+                <p class="section-subtitle">Des biens qui pourraient vous intéresser</p>
+                <div class="property-grid">
+                    {{range .Recommended}}
+                    <article class="roomCard" onclick="window.location='/red_project/logement/{{.IdProperty}}'">
+                        <div class="img-wrapper">
+                            {{if .ImgProperty}}<img src="/assets/img/{{index .ImgProperty 0}}" alt="{{.NameProperty}}" class="imgRoom" loading="lazy">{{else}}<div class="imgRoom placeholder-img"></div>{{end}}
+                            <span class="badge">Recommandé</span>
+                            <span class="roomLabel">{{.NameProperty}}</span>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="price">{{.PriceProperty}} €</h3>
+                            <div class="features">
+                                {{if .TypeLabel}}<span>{{.TypeLabel}}</span>{{end}}
+                                {{if .Surface}}<span>{{.Surface}} m²</span>{{end}}
+                                {{if .Location}}<span>{{.Location}}</span>{{end}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if gt .UserDetail.IdUser 2}}
+                <div style="margin-top:64px;padding-top:32px;border-top:1px solid var(--grey);text-align:center;">
+                    <form action="/red_project/Profil/delete" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')">
+                        <button type="submit" style="background:none;border:none;color:var(--grey);font-size:0.8rem;cursor:pointer;font-family:Arial,sans-serif;text-decoration:underline;padding:4px 8px;">Supprimer mon compte</button>
+                    </form>
+                </div>
+                {{end}}
+
+                {{else}}
+                <p style="text-align:center;color:var(--grey);padding:64px 0;margin:0;">Profil public de {{.UserDetail.NameUser}}</p>
+                {{end}}
+
             </div>
         </section>
     </main>
 
+    {{template "footer" .}}
     <script src="/assets/js/connect.js" defer></script>
 </body>
 </html>
